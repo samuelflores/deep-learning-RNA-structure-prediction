@@ -1,0 +1,20 @@
+>R1107 0 
+GGGGGCCACAGCAGAAGCGUUCACGUCGCAGCCCCUGUCAGCCAUUGCACUCCGGCUGCGAAUUCUGCU
+# for comparison:
+>R1108 0
+GGGGGCCACAGCAGAAGCGUUCACGUCGCgGCCCCUGUCAGCCAUUGCACUCCGGCUGCGAAUUCUGCU
+
+
+Target: R1107
+Target:	R1107
+Type:	All-group target
+Is multimer?	No
+Is CAPRI target?	No
+Is ligand target?	No
+Entry Date:	2022-05-06
+Server Expiration Date:	2022-05-09
+Human Expiration Date:	2022-05-28
+Protein:	CPEB3 ribozyme
+Organism:	Human
+Residues:	69
+Method:	X-RAY
