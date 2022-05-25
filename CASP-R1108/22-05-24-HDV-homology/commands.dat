@@ -1,0 +1,21 @@
+firstStage 2
+lastStage 2
+
+# chain R is the RNA
+loadSequencesFromPdb 1sj3.short.pdb
+
+RNA 1 1   GGGGGCCACAGCAGAAGCGUUCACGUCGCGGCCCCUGUCAGCCAUUGCACUCCGGCUGCGAAUUCUGCU
+#    P1   GGGGGCC                      GGCCCCU                                 
+#         P2       AGCAGAA                                            AAUUCUGCU
+#                                          J4/5                     CGAA
+#                                          CCUGUCAGCCAUUGCACUCCGGCUGCGA
+#                                          L4        AUUGCACUCC
+#                                          P4   CAGCC          GGCUG   
+#                                               CAGCCAU       CGGCUGCG          
+#                                               CAGAUUC    GAAUCUG
+
+alignmentForces noGap
+alignmentForces forceConstant 300
+alignmentForces R 1 7 1 1 7
+alignmentForces R 31 38 1  30 36
+
