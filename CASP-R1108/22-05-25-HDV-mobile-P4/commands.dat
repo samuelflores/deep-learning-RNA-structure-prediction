@@ -1,5 +1,5 @@
-firstStage 11
-lastStage 11
+firstStage 12
+lastStage 12
 
 readAtStage 2
 reportingInterval .1
@@ -63,7 +63,7 @@ alignmentForces R 28 30 1 27 29
 alignmentForces R 25 27 1 24 26
 #P4: Should be aligned with the rigid but non-fixed S:
 alignmentForces S 43 47 1 39 43
-alignmentForces S 58 62 1 52 56
+#alignmentForces S 58 62 1 52 56
 
 
 # Ignore P1.1, present in HPV, and possibly also in the pre-cleaved CBEP3, but here we have the cleaved.
@@ -80,9 +80,22 @@ mobilizer Rigid
 # This sets two residues at teh P1.1-P4 and P4-J4_2 boundary flexible.
 mobilizer Default 1 36 40
 mobilizer Default 1 56 57
+mobilizer Default 1 36 58
+
 NtC 1 35 40 AA00
 #NtC 1 38 39 AA00
 #NtC 1 39 40 AA00
 NtC 1 55 58 AA00 
 #NtC 1 56 57 AA00 
 #NtC 1 57 58 AA00 
+
+#P4
+nucleicAcidDuplex 1 39 43     1 58 58-4
+#P1
+nucleicAcidDuplex 1 30 36     1 7  1    
+#P3
+nucleicAcidDuplex 1 17 19     1 29 27   
+
+
+
+
