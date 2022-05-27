@@ -1,0 +1,174 @@
+firstStage 27
+lastStage 27
+
+#readFromStage 17
+#reportingInterval 1
+#readBlockEnd
+
+readAtStage 2
+# chain R is the RNA
+loadSequencesFromPdb 1sj3.short.renum.pdb
+#        UGGCCGGCAUGGUCCCAGCCUCCUCGCUGGCGCCGGCUGGGCAACACCAUUGCACUCCGGUGGUGAAUGGGAC
+# P1: according to Ke and Doudna, and in agreement with 1sj3-renumbered:
+#         GGCCGGC (1-7)                 GCCGGCU (31-37)
+# P4:                                               ACACC (43-47)  GGUGG (58-62)  
+# renumbering should hopefully now match HPV ribozyme numbering in Ke&Doudna 2004 https://www.nature.com/articles/nature02522.pdf
+# template chain should be rigid, and may as well fix to ground:
+
+# chain 1 is CBEP3, see Benedixsen et al 2021, for numbering and secondary structure, https://academic.oup.com/mbe/article/38/7/2843/6171150?login=true
+RNA 1 1   GGGGGCCACAGCAGAAGCGUUCACGUCGCGGCCCCUGUCAGCCAUUGCACUCCGGCUGCGAAUUCUGCU
+#    P1   GGGGGCC                      GGCCCCU                                 
+#    P1.1                      CA (22-23)     GU (37-38)                         
+#         P2       AGCAGAA                                            AAUUCUGCU
+#         P3              GCG       CGC
+#                                          J4/5                     CGAA
+#                                          CCUGUCAGCCAUUGCACUCCGGCUGCGA
+#                                          L4        AUUGCACUCC
+#                                          P4   CAGCC          GGCUG   
+#                                               CAGCCAU       CGGCUGCG          
+#                                               CAGAUUC(39 GAAUCUG
+#                      For pairing with HPV:    CAGAU        AUCUG
+readBlockEnd
+
+readFromStage 3
+loadSequencesFromPdb
+readBlockEnd
+
+# do NOT weld S!
+mobilizer Rigid 
+rootMobilizer 1 Weld
+rootMobilizer R Weld
+#rootMobilizer S Weld
+#constraint  1 LastResidue Weld Ground
+
+alignmentForces noGap
+alignmentForces forceConstant 150
+readAtStage 25
+alignmentForces R 38 38 1 37 37
+alignmentForces R 39 39 1 38 38
+readBlockEnd
+readFromStage 1700
+# leave at default, which i think is 30
+#P1:
+alignmentForces R 1 7 1 1 7
+alignmentForces R 31 37 1  30 36
+# P1.1:
+# note 38-36 alignment is redundant with P1..
+alignmentForces R 38 38 1 37 37
+alignmentForces R 39 39 1 38 38
+alignmentForces R 21 22 1 22 23
+#P2: # chain R residue 73 is not resolved.
+alignmentForces R 10 16 1  10 16
+alignmentForces R 67 72 1  61 67
+#J4/2:
+#just to pull this loop a bit more to where it should go:
+alignmentForces R 63 66 1  57 60
+#P3:
+alignmentForces R 17 19 1 17 19 
+alignmentForces R 28 30 1 27 29
+# just to pull loop L3 out of the way. but don't involve chain 1 res 23, it is busy with P1.1.
+alignmentForces R 25 27 1 24 26
+alignmentForces S 43 47 1 39 43
+alignmentForces S 58 62 1 52 56
+#P4: Should be aligned with the rigid but non-fixed S:
+# make L4 a little less twisty clashy:
+#alignmentForces S 51 51 1 47 47
+readBlockEnd
+#readFromStage 22
+#alignmentForces S 43 47 1 39 43
+#alignmentForces S 58 62 1 54 58
+#readBlockEnd
+readAtStage 26
+alignmentForces R 67 72 1  61 67
+contact AllHeavyAtomSterics 1 FirstResidue LastResidue
+readBlockEnd
+
+# Ignore P1.1, present in HPV, and possibly also in the pre-cleaved CBEP3, but here we have the cleaved.
+
+# Now allow only P4 to move:
+# This sets two residues at teh P1.1-P4 and P4-J4_2 boundary flexible.
+#mobilizer Default 1 36 40
+#mobilizer Default 1 56 57
+readAtStage 27
+constraint  1 LastResidue Weld Ground
+mobilizer Default 1 44 53           
+#contact AllHeavyAtomSterics 1 40 60                     
+setDefaultMDParameters
+physicsRadius .01
+reportingInterval .1
+alignmentForces 1 46 51 S 49 54
+readBlockEnd
+# probably need to adjust all the way to 3' terminus:
+#mobilizer Default 1 
+#1  69
+
+setHelicalStacking 0
+readFromStage 1700
+# add NtCs automatically
+setHelicalStacking 1
+#NtCForceScaleFactor 1000000
+#make the end of P1 look a little nicer
+NtC 1  7 8  AA00
+# same with the end of P2
+NtC 1 9 10  AA00
+NtC 1 35 40 AA00
+# extend L4 a bit:
+NtC 1 44 44+3 AA00
+NtC 1 53-3  53  AA00
+#NtC 1 38 39 AA00
+#NtC 1 39 40 AA00
+#NtC 1 55 58 AA00 
+#NtC 1 56 57 AA00 
+#NtC 1 57 58 AA00 
+NtC 1 67 69 AA00 
+readBlockEnd
+readFromStage 21
+#P1
+#nucleicAcidDuplex 1 30 36     1 7  1    
+#P2
+#nucleicAcidDuplex 1 10 16     1 61+6  61   
+#P3
+#nucleicAcidDuplex 1 17 19     1 29 27   
+#P4
+#nucleicAcidDuplex 1 39 43     1 58 58-4
+#nucleicAcidDuplex 1 43-2 43     1 56 54
+NtCForceScaleFactor 10000
+readBlockEnd
+# lastest, 36 was 39:
+readFromStage 23
+NtC 1 37   43 AA00
+readBlockEnd
+readFromStage 22
+NtC 1 54 58   AA00
+readBlockEnd
+temperature 1
+readAtStage 23
+#numReportingIntervals 10
+nucleicAcidDuplex 1 39   43     1 58 54
+#baseInteraction 1 43-2 WatsonCrick 1 56 WatsonCrick Cis
+readBlockEnd
+readFromStage 23
+mobilizer Rigid 1 43-2 43
+mobilizer Rigid 1 54 56   
+readBlockEnd
+
+#stage 23: unWeld'ed chain S from Ground
+# extended NtCs to 36-43, was 39-43. that was a problem! that was a problem!. so just extended to 38-43, worked.
+#stage 24: now rigidified 39-58.
+#stage 25: extended NtCs to 37-43 (was 38-43). Did not stabilize 37. Next tried adding alignment forces:
+#alignmentForces R 38 38 1 37 37
+#alignmentForces R 39 39 1 38 38
+# stage 26: rigidified all execept the 3' tail:
+#mobilizer Default 1 59 LastResidue
+# and pulled in the 3'tail: (workjed fine)
+#alignmentForces R 67 72 1  61 67
+# prefvented clashes: (wroked)
+#contact AllHeavyAtomSterics 1 FirstResidue LastResidue
+# stage 27: declashed L4
+#constraint  1 LastResidue Weld Ground
+#mobilizer Default 1 44 53           
+#contact AllHeavyAtomSterics 1 40 60                     
+
+
+
+
