@@ -1,0 +1,10 @@
+#template: 3Q50:
+#NA A 1  CUGGGUCGCAGUAACCCCAGUUAACAAAACAAG
+# 
+# This is inserted    x (res 14)                
+RNA A 1  UUGGGUUCCCUCAuCCCCAAUCAUAAAAAGG
+firstStage 2
+lastStage 2
+mobilizer Rigid
+rootMobilizer Weld
+
