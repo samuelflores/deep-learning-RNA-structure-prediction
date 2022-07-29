@@ -20,8 +20,12 @@ nucleicAcidDuplex 1 10 10+6  1 69 69-6
 nucleicAcidDuplex 1 18 18+1  1 25 25-1 
 nucleicAcidDuplex 1 26 26+7  1 61 61-7
 
- 
+nucleicAcidDuplex 1 49 50    1 37 38   
+nucleicAcidDuplex 1 47 48    1 41 42   
 
+ 
+firstStage 1
+lastStage 1
 
 #Target: R1108
 #Target:	R1108

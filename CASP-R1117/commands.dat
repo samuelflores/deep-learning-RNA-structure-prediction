@@ -1,10 +1,36 @@
 #template: 3Q50:
 #NA A 1  CUGGGUCGCAGUAACCCCAGUUAACAAAACAAG
 # 
-# This is inserted    x (res 14)                
-RNA A 1  UUGGGUUCCCUCAuCCCCAAUCAUAAAAAGG
-firstStage 2
-lastStage 2
+# This is inserted     x (res 14)                
+#RNA A 1  UUGGGUUCCCUCAUCCCCAAUCAUAAAAAGG
+#RNA A 1  UUGGGUUCCCUCA CCCCAAUCAUAAAAAGG
+loggingSeverity DEBUG
+firstStage 5
+lastStage 10
+loadSequencesFromPdb
 mobilizer Rigid
-rootMobilizer Weld
+mobilizer Default A 12 15
+mobilizer Default A 30 
+#rootMobilizer Weld
+constrainChainRigidSegments A Ground
 
+readAtStage 3
+reportingInterval .001
+singleBondMobility   A 13 O3' Free A 15 P
+readBlockEnd
+readAtStage 4
+reportingInterval .03
+singleBondMobility   A 13 O3' Free A 15 P
+numReportingIntervals 10
+readBlockEnd
+
+reportingInterval .1 
+#setDefaultMDParameters
+#globalCoulombScaleFactor .1 
+#physicsRadius 0.4
+baseInteraction A 12 WatsonCrick A 30 WatsonCrick Cis
+NtC A 29 31 AA00
+NtC A 11 16 AA00
+#NtC A 12 13 AA00
+#NtC A 13 15 AA00
+#NtC A 15 16 AA00
