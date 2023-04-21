@@ -1,3 +1,17 @@
+# Ignore all log, .tiff files:
+*.log
+*.tif
+*.tiff
+# Ignore directories with this name:
+TetraloopsDatasets/
+../CASP-R1107/  
+./CASP-R1107/  
+CASP-R1108/	
+CASP-R1116/  
+CASP-R1117/	
+CASP-R1136/  
+CASP-R1189/
+
 labeleddinucfreq_march25.csv
 .ipynb_checkpoints
 .annotate-base-pairs-and-NtCs.py.swp
