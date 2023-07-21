@@ -5,39 +5,36 @@ import numpy as np
 import glob
 
 
-# To run this script, execute this in terminal: python generate_44classes_dataset.py "path_to_clusters_folder"
+#* To run this script, execute this in terminal: python generate_44classes_dataset.py "path_to_clusters_folder"
 
-# First part: generate one-hot encoded sequences of 8nt for each entry and save into group of matrices based on cluster.
+
+#* First part: generate one-hot encoded 8nt-length sequences for each PDB entry and save into group of matrices based on cluster.
+# TODO in chih-fan's files, the "clusters_folder" contains all the tloop PDB entries, grouped into folders (based on cluster). presumably this is the data given as-is. 1. find out where to get this data and 2. figure out what each align.pdb file stands for
 def get_unique_pdb_position_seq8(cluster_folderpath):
-    p = PDB.PDBParser(PERMISSIVE=1)
-    filename_list = os.listdir(cluster_folderpath)  # File name of each pdb entry of tloop.
+    p = PDB.PDBParser(PERMISSIVE=1) # parser object?
+    filename_list = os.listdir(cluster_folderpath)  # list of tloop PDB filenames
+    
     unique_pdb_position_list = []
     for filename in filename_list:
-        pdb_position = filename[0:-16]
-        # print(pdb)
+        pdb_position = filename[0:-16] # excluding the suffix of the filename (_00000.align.pdb)
         if pdb_position not in unique_pdb_position_list:
             unique_pdb_position_list.append(pdb_position)
-
-        else:
-            pass
-
+    
     seq8_list = []
     count_uniqueindex = []
     for unique_pdb_position in unique_pdb_position_list:
-        for file in os.listdir(cluster_folderpath):
+        for file in filename_list:
             if file.startswith(unique_pdb_position) and file[0:-16] not in count_uniqueindex:
-                # print(unique_pdb_position)
                 count_uniqueindex.append(unique_pdb_position)
                 structure = p.get_structure(unique_pdb_position, cluster_folderpath + file)
                 seq8 = ''
-                for res in PDB.Selection.unfold_entities(structure, target_level='R'):
+                for res in PDB.Selection.   unfold_entities(structure, target_level='R'):
                     seq8 += res.get_resname()
 
                 seq8_list.append(seq8)
-
-    # print(len(seq8_list))
-    # print(len(count_uniqueindex))
+    
     return seq8_list
+
 
 def make_seqmatrix_one_hot(seq_list):
     matrices = []
@@ -57,46 +54,47 @@ def make_seqmatrix_one_hot(seq_list):
         matrices.append(np.array(seqmatrix_one_hot))
     return matrices
 
-# Take path to the folder with cluster files. List the cluster names.
-clusters_folders_path_list = os.listdir(sys.argv[1])
-print(clusters_folders_path_list)
 
-for folder in clusters_folders_path_list:  # folder = cluster name
-    # print(folder)
-    # print(folder[2:])
-    matrices = make_seqmatrix_one_hot(get_unique_pdb_position_seq8(sys.argv[1] + '/' + folder + '/'))
-    np.save(folder + '_one_hot_matrices', matrices)
-
-
-# Second part: save each entry into test and train dataset.
-
-# Make train and test set.
-test_matrices = []
-test_labels = []
-train_matrices = []
-train_labels = []
+if __name__ == "__main__":
+    # Take path to the folder with cluster files. List the cluster names.
+    clusters_folders_path_list = os.listdir(sys.argv[1])
+    
+    # for each cluster, save the matrices as a .npy binary files
+    for folder in clusters_folders_path_list:  # folder = cluster name
+        matrices = make_seqmatrix_one_hot(get_unique_pdb_position_seq8(sys.argv[1] + '/' + folder + '/'))
+        np.save(folder + '_one_hot_matrices', matrices)
 
 
-def append_matrices_and_labels_to_list(matricesfilename):
-    a = np.load(matricesfilename, allow_pickle=True)
+# # Second part: save each entry into test and train dataset.
+#! this part is redundant with make_dataset.py, i think
 
-    for i in range(len(a)):
-        if i%3 == 0:
-            test_matrices.append(a[i])
-            test_labels.append(int(matricesfilename[1:3]))
-        else:
-            train_matrices.append(a[i])
-            train_labels.append(int(matricesfilename[1:3]))
-    # print(len(test_matrices), len(test_labels), len(train_matrices), len(train_labels))
-    return test_matrices, test_labels, train_matrices, train_labels
+# # Make train and test set.
+# test_matrices = []
+# test_labels = []
+# train_matrices = []
+# train_labels = []
 
 
-matricesfile_list = glob.glob('*_one_hot_matrices.npy')
-for matricesfile in matricesfile_list:
-    append_matrices_and_labels_to_list(matricesfile)
+# def append_matrices_and_labels_to_list(matricesfilename):
+#     a = np.load(matricesfilename, allow_pickle=True)
 
-# np.savez('test_array.npz', np.array(test_matrices))
-# np.savez('train_array.npz', np.array(train_matrices))
-#
-# np.save('test_labels.npy', test_labels)
-# np.save('train_labels.npy', train_labels)
+#     for i in range(len(a)):
+#         if i%3 == 0:
+#             test_matrices.append(a[i])
+#             test_labels.append(int(matricesfilename[1:3]))
+#         else:
+#             train_matrices.append(a[i])
+#             train_labels.append(int(matricesfilename[1:3]))
+#     # print(len(test_matrices), len(test_labels), len(train_matrices), len(train_labels))
+#     return test_matrices, test_labels, train_matrices, train_labels
+
+
+# matricesfile_list = glob.glob('*_one_hot_matrices.npy')
+# for matricesfile in matricesfile_list:
+#     append_matrices_and_labels_to_list(matricesfile)
+
+# # np.savez('test_array.npz', np.array(test_matrices))
+# # np.savez('train_array.npz', np.array(train_matrices))
+# #
+# # np.save('test_labels.npy', test_labels)
+# # np.save('train_labels.npy', train_labels)
