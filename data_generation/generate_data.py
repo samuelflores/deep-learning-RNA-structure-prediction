@@ -1,160 +1,114 @@
 import argparse
-import ast
-import json
 import os
 
+import numpy as np
+import numpy.typing as npt
 import pandas as pd
 
-from Bio.PDB import PDBList, FastMMCIFParser
+
+def parse_pdb(filepath: str):
+    res_names, res_seqs = [], []
+    with open(filepath, 'r') as file:
+        for line in file:
+            if line.split()[0] == 'MODEL':
+                break
+        for line in file:
+            if line.split()[0] == 'TER':
+                break
+            rec_name, res_name, res_seq, element = line[:6].strip(), line[17:20].strip(), int(line[22:26].strip()), line[13:16].strip()
+            if rec_name == 'ATOM' and element == 'P':
+                res_names += [res_name]
+                res_seqs += [res_seq]
+    return res_names, res_seqs
 
 
-# weird tloops: ['3a3a', '3adb', '3adc', '3hl2', '3rg5', '3w3s', '4rqf']
+def parse_cif(filepath: str):
+    pdb_strand_ids, pdb_mon_ids, pdb_seq_nums, pdb_ins_codes = [], [], [], []
+    with open(filepath, 'r') as file:
+        for line in file:
+            if line.strip() == '_pdbx_poly_seq_scheme.hetero':
+                break
+        for line in file:
+            if line.strip() == '#':
+                break
+            data = line.split()
+            pdb_strand_id, pdb_mon_id, pdb_seq_num, pdb_ins_code = data[9], data[7], data[5], data[10]
+            if len(pdb_mon_id) > 1 or pdb_mon_id == '?':
+                continue
+            pdb_strand_ids += [pdb_strand_id]
+            pdb_mon_ids += [pdb_mon_id]
+            pdb_seq_nums += [pdb_seq_num]
+            pdb_ins_codes += [pdb_ins_code]
+    return pdb_strand_ids, pdb_mon_ids, pdb_seq_nums, pdb_ins_codes
 
-# TODO correct bottaro's original chain IDs (if they're wrong) 
 
-# DONE parse every non-duplicate .align.pdb ATOM file for the sequence and residue numbers
-# DONE check that a) the chain is long enough to contain the residue number b) the first residues and number align c) the whole sequence matches
-# DONE allow for residue number skipping in decoy generation. generate decoys only from the chain from which the tetraloop originates
-# DONE (not really, i just don't touch the original data) update chain ID in bottaro's dataset
-
-# Extract PDB data from cluster folder filenames
-def get_tloop_data(clusters_folder):
-    data = pd.DataFrame(columns=['pdb_id','sequence','residue_numbers','cluster'])
+def get_tloop_sequences(clusters_folder: str) -> dict[str, list[tuple[int, npt.ArrayLike]]]:
+    sequences = {}
     for folder in os.listdir(clusters_folder):
         cluster = int(folder[1:])
         for file in os.listdir(f'{clusters_folder}/{folder}'):
-
             pdb_id = file[:4].lower()
+            if pdb_id not in sequences.keys():
+                sequences[pdb_id] = []
             filepath = f'{clusters_folder}/{folder}/{file}'
-
-            sequence = ''
-            residue_numbers = []
-            with open(filepath, 'r') as f:
-                for line in f:
-                    record_name = line[:6].strip()
-                    atom_name = line[13:16].strip()
-                    if record_name == 'ATOM' and atom_name == 'P':
-                        sequence += line[17:20].strip()
-                        residue_numbers += [int(line[22:26].strip())]
-            residue_numbers = tuple(residue_numbers)
-            
-            entry = pd.DataFrame({'pdb_id': pdb_id, 'sequence': sequence, 'residue_numbers': [residue_numbers], 'cluster': cluster})
-            data = pd.concat([data, entry], ignore_index=True)
-    
-    data = data.drop_duplicates()
-    return data
-
-
-# * For some reason, many of the .cif files contain a lot of duplicate chains
-def get_full_sequences(pdb_ids, structures_folder):
-    parser = FastMMCIFParser(QUIET=True)
-    sequences = pd.DataFrame(columns=['pdb_id','chain','sequence','residue_numbers'])
-    
-    for pdb_id in pdb_ids:
-        print('Retrieving sequences for ' + pdb_id)
-        structure = parser.get_structure(pdb_id, f'{structures_folder}/{pdb_id}.cif')
-
-        for chain in structure.get_chains():
-            sequence = ''
-            residue_numbers = []
-
-            for res in chain.get_residues():
-                if len(res.resname) > 1:
-                    continue
-                sequence += res.resname
-                residue_numbers += [res.id[1]] # https://biopython.org/docs/1.76/api/Bio.PDB.Entity.html
-            
-            if sequence:
-                residue_numbers = tuple(residue_numbers)
-                entry = pd.DataFrame({'pdb_id': pdb_id, 'chain': chain.id, 'sequence': sequence, 'residue_numbers': [residue_numbers]})
-                sequences = pd.concat([sequences, entry], ignore_index=True)
-    
-    sequences = sequences.drop_duplicates()
+            array = np.row_stack(parse_pdb(filepath))
+            if not any(np.array_equal(array, i[1]) for i in sequences[pdb_id]):
+                sequences[pdb_id] += [(cluster, array)]
     return sequences
 
 
-def get_tloop_chains(tloops, full_sequences):
-    tloop_chains = pd.DataFrame(columns=['pdb_id','chain','sequence', 'residue_numbers'])
-
-    for tloop in tloops.itertuples(index=False):
-        tloop_resnum = tloop.residue_numbers[0]
-        chains = full_sequences[full_sequences.iloc[:, 0].str.fullmatch(tloop.pdb_id, case=False)]
-        for chain in chains.itertuples(index=False):
-            try:
-                chain_idx = chain.residue_numbers.index(tloop_resnum)
-            except ValueError:
-                continue
-            chain_seq = chain.sequence[chain_idx:chain_idx+8]
-            chain_resnums = chain.residue_numbers[chain_idx:chain_idx+8]
-            if tloop.sequence == chain_seq and tloop.residue_numbers == chain_resnums:
-                entry = pd.DataFrame({'pdb_id': tloop.pdb_id, 'chain': chain.chain, 'sequence': chain.sequence, 'residue_numbers': [chain.residue_numbers]})
-                tloop_chains = pd.concat([tloop_chains, entry], ignore_index=True)
-    
-    tloop_chains = tloop_chains.drop_duplicates(['pdb_id','sequence','residue_numbers'])
-    return tloop_chains
+def get_full_sequences(pdb_ids: list[str], structures_folder: str) -> dict[str, npt.ArrayLike]:
+    sequences = {}
+    for pdb_id in pdb_ids:
+        array = np.row_stack(parse_cif(f'{structures_folder}/{pdb_id}.cif'))
+        sequences[pdb_id] = array
+    return(sequences)
 
 
-def get_all_fragments(tloop_chains, fragment_length):
-    all_fragments = pd.DataFrame(columns=['pdb_id','chain','sequence', 'residue_numbers'])
-    for chain in tloop_chains.itertuples(index=False):
-        print(f'Fragmenting chain {chain.pdb_id}_{chain.chain}')
-        fragment_seqs = [chain.sequence[i:i+fragment_length] for i in range(len(chain.sequence) - fragment_length + 1)]
-        fragment_resnums = [chain.residue_numbers[i:i+fragment_length] for i in range(len(chain.residue_numbers) - fragment_length + 1)]
-        entry = pd.DataFrame({'pdb_id': chain.pdb_id, 'chain': chain.chain, 'sequence': fragment_seqs, 'residue_numbers': fragment_resnums})
-        all_fragments = pd.concat([all_fragments, entry], ignore_index=True)
-    return all_fragments
+def align_tloops(tloop_seqs, full_seqs) -> dict[str, npt.ArrayLike]:
+    sequences = {}
+    for pdb_id, full_arr in full_seqs.items():
+        full_resnames, full_resnums = full_arr[1], full_arr[2]
+        clusters = np.zeros((len(full_resnames),), dtype=int)
+        for cluster, tloop_arr in tloop_seqs[pdb_id]:
+            tloop_resnames, tloop_resnums = tloop_arr[0], tloop_arr[1]
+            possible_idxs = np.where(full_resnums == tloop_resnums[0])[0]
+            for idx in possible_idxs:
+                idx_resnames = full_resnames[idx:idx+8]
+                idx_resnums = full_resnums[idx:idx+8]
+                if (
+                    len(idx_resnames) == 8 and len(idx_resnums) == 8 and
+                    np.all(idx_resnames == tloop_resnames) and np.all(idx_resnums == tloop_resnums)
+                    ):
+                    clusters[idx] = cluster
+        sequences[pdb_id] = np.vstack([full_arr, clusters])
+    return sequences
 
 
-def drop_tloops(all_fragments, tloop_data):
-    merged_fragments = all_fragments.merge(tloop_data, how='left', on=['pdb_id','sequence','residue_numbers'], indicator=True)
-    decoy_fragments = merged_fragments[merged_fragments['_merge'] == 'left_only'].drop(columns=['_merge','cluster'])
-    return decoy_fragments
+# frag_len: int = 8
+# frag_extension = int((8-frag_len)/2)
+# clusters[idx-frag_extension] = cluster
+
+
+# TODO make this table better
+def array_to_df(array):
+    df = pd.DataFrame(columns=['pdb_id','array'])
+    df['pdb_id'] = array.keys()
+    arr_list = []
+    for arr in array.values():
+        arr_list += [[','.join(i) for i in arr.tolist()]]
+    df['array'] = arr_list
+    df = df.explode('array')
+    return df
 
 
 def main(args):
-
-    # # load existing data
-    tloop_data = pd.read_csv('tloop_data.csv', sep='\t')
-    tloop_data['residue_numbers'] = tloop_data['residue_numbers'].apply(ast.literal_eval)
-
-    # full_sequences = pd.read_csv('full_sequences.csv', sep='\t')
-    # full_sequences['residue_numbers'] = full_sequences['residue_numbers'].apply(ast.literal_eval)
-
-    # tloop_chains = pd.read_csv('tloop_chains.csv', sep='\t')
-    # tloop_chains['residue_numbers'] = tloop_chains['residue_numbers'].apply(ast.literal_eval)
-
-    all_fragments = pd.read_csv('all_fragments.csv', sep='\t')
-    all_fragments['residue_numbers'] = all_fragments['residue_numbers'].apply(ast.literal_eval)
-
-    # decoy_fragments = pd.read_csv('decoy_fragments.csv', sep='\t')
-    # decoy_fragments['residue_numbers'] = decoy_fragments['residue_numbers'].apply(ast.literal_eval)
-
-    ###################################
-
-    # # tloop data
-    # tloop_data = get_tloop_data(args.clusters_folder)
-    # tloop_data.to_csv('tloop_data.csv', sep='\t', index=False)
-
-    # pdb_ids = set(tloop_data['pdb_id'].to_list())
-
-    # # download mmcif files
-    # PDBList().download_pdb_files(pdb_ids, pdir=args.structures_folder, obsolete=True)
-
-    # # full sequences
-    # full_sequences = get_full_sequences(pdb_ids, args.structures_folder)
-    # full_sequences.to_csv('full_sequences.csv', sep='\t', index=False)
-
-    # # tloop chains
-    # tloop_chains = get_tloop_chains(tloop_data, full_sequences)
-    # tloop_chains.to_csv('tloop_chains.csv', sep='\t', index=False)
-
-    # # fragments
-    # all_fragments = get_all_fragments(tloop_chains, args.fragment_length)
-    # all_fragments.to_csv('all_fragments.csv', sep='\t', index=False)
-
-    # decoys
-    # decoy_fragments = drop_tloops(all_fragments, tloop_data)
-    # decoy_fragments.to_csv('decoy_fragments.csv', sep='\t', index=False)
+    tloop_sequences = get_tloop_sequences(args.clusters_folder)
+    pdb_ids = tloop_sequences.keys()
+    full_sequences = get_full_sequences(pdb_ids, args.structures_folder)
+    all_sequences = align_tloops(tloop_sequences, full_sequences, args.fragment_length)
+    np.savez('all_sequences.npz', **all_sequences)
+    array_to_df(all_sequences).to_csv('all_sequences_test.csv', sep='\t', index=False)
 
 
 if __name__ == '__main__':
