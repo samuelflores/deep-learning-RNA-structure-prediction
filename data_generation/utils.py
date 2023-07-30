@@ -40,7 +40,7 @@ def parse_cif(filepath: str):
     return chain_ids, clust_nums, res_names, res_nums, ins_codes
 
 
-
+# TODO make this more efficient
 def arrdict_to_df(arrdict: dict) -> pd.DataFrame:
     df = pd.DataFrame(columns=['pdb_id','index','category','values'])
     categories = ['chain_ids', 'clust_nums', 'res_names', 'res_nums', 'ins_codes']
@@ -58,3 +58,9 @@ def arrdict_to_df(arrdict: dict) -> pd.DataFrame:
             df = pd.concat([df, entry], ignore_index=True)
     df = df.dropna(axis=1)
     return df
+
+
+def write_fasta(labels: list[str], sequences: list[str], filepath: str) -> None:
+    with open(filepath, 'w') as file:
+        for i in range(len(labels)):
+            file.write(f'>{labels[i]}\n{sequences[i]}\n')
