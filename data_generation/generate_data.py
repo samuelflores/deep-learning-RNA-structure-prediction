@@ -134,7 +134,7 @@ def arrdict_to_df(arrdict: dict) -> pd.DataFrame:
 
 def main(args):
     tloop_seqs = get_tloop_sequences(args.clusters_dir)
-    np.savez('tloop_seqs.npz', **tloop_seqs)
+    np.savez_compressed('tloop_seqs.npz', **tloop_seqs)
     arrdict_to_df(tloop_seqs).to_csv('tloop_seqs.csv', sep='\t', index=False)
     print('Tetraloop sequences retrieved')
 
@@ -142,17 +142,17 @@ def main(args):
 
     full_seqs = get_full_sequences(pdb_ids, args.structures_dir)
     # full_seqs = remove_redundancy(full_seqs)
-    np.savez('full_seqs.npz', **full_seqs)
+    np.savez_compressed('full_seqs.npz', **full_seqs)
     arrdict_to_df(full_seqs).to_csv('full_seqs.csv', sep='\t', index=False)
     print('Full sequences retrieved')
 
     all_seqs = align_tloops_to_full(tloop_seqs, full_seqs)
-    np.savez('all_seqs.npz', **all_seqs)
+    np.savez_compressed('all_seqs.npz', **all_seqs)
     arrdict_to_df(all_seqs).to_csv('all_seqs.csv', sep='\t', index=False)
     print('All sequences retrieved')
 
     all_frags = get_fragments(all_seqs, args.fragment_length)
-    np.savez('all_frags.npz', **all_frags)
+    np.savez_compressed('all_frags.npz', **all_frags)
     arrdict_to_df(all_frags).to_csv('all_frags.csv', sep='\t', index=False)
     print('All fragments retrieved')
 
