@@ -130,7 +130,7 @@ def main(args):
     print('All sequences retrieved')
 
     all_frags = get_fragments(all_seqs, args.fragment_length)
-    np.savez_compressed('all_frags.npz', **all_frags)
+    np.savez_compressed(f'all_frags_{args.fragment_length}.npz', **all_frags)
     print('All fragments retrieved')
 
 
