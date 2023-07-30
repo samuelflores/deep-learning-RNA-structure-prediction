@@ -1,7 +1,9 @@
-# Ignore all log, .tiff files:
+# Ignore all log, .tiff, .npz, .csv files:
 *.log
 *.tif
 *.tiff
+*.npz
+*.csv
 # Ignore directories with this name:
 TetraloopsDatasets/
 ../CASP-R1107/  
