@@ -4,6 +4,8 @@
 *.tiff
 *.npz
 *.csv
+*.fasta
+*.fa
 # Ignore directories with this name:
 TetraloopsDatasets/
 ../CASP-R1107/  
