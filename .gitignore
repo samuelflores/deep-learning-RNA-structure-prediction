@@ -6,6 +6,7 @@
 *.csv
 *.fasta
 *.fa
+*.pickle
 # Ignore directories with this name:
 TetraloopsDatasets/
 ../CASP-R1107/  
