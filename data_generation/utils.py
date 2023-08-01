@@ -1,4 +1,8 @@
 import pandas as pd
+import pickle
+
+from sequence_classes import Sequence, Tetraloop, PDB, Fragment
+from typing import Type
 
 
 def parse_pdb(filepath: str):
@@ -13,10 +17,9 @@ def parse_pdb(filepath: str):
             rec_name, res_name, res_num, element = line[:6].strip(), line[17:20].strip(), line[22:26].strip(), line[13:16].strip()
             if rec_name == 'ATOM' and element == 'P': # All bases start with P
                 res_names += [res_name]
-                res_nums += [res_num]
-    clust_nums = [int(filepath.split('/')[-2][1:])]*8
-    chain_ids, ins_codes = ['']*8, ['']*8
-    return chain_ids, clust_nums, res_names, res_nums, ins_codes
+                res_nums += [int(res_num)]
+    seq_nums = list(range(len(res_names)))
+    return seq_nums, res_names, res_nums
 
 
 def parse_cif(filepath: str):
@@ -34,27 +37,47 @@ def parse_cif(filepath: str):
                 continue
             chain_ids += [chain_id]
             res_names += [res_name]
-            res_nums += [res_num]
+            res_nums += [int(res_num)]
             ins_codes += [ins_code]
-    clust_nums = [0]*len(res_names)
-    return chain_ids, clust_nums, res_names, res_nums, ins_codes
+    seq_nums = list(range(len(res_names)))
+    clust_ids = [0]*len(res_names)
+    return seq_nums, chain_ids, clust_ids, res_names, res_nums, ins_codes
 
 
-# TODO make this more efficient
-def arrdict_to_df(arrdict: dict) -> pd.DataFrame:
-    df = pd.DataFrame(columns=['pdb_id','index','category','values'])
-    categories = ['chain_ids', 'clust_nums', 'res_names', 'res_nums', 'ins_codes']
-    for pdb_id, value in arrdict.items():
-        if type(value) is list:
-            for idx, arr in enumerate(value):
-                arr_stings = [','.join(i) for i in arr.tolist()]
-                entry = pd.DataFrame({'pdb_id': pdb_id, 'index':int(idx), 'category':[categories], 'values':[arr_stings]})
-                entry = entry.explode(['category', 'values'])
-                df = pd.concat([df, entry], ignore_index=True)
-        else:
-            arr_stings = [','.join(i) for i in value.tolist()]
-            entry = pd.DataFrame({'pdb_id': pdb_id, 'category':[categories], 'values':[arr_stings]})        
-            entry = entry.explode(['category', 'values'])
-            df = pd.concat([df, entry], ignore_index=True)
-    df = df.dropna(axis=1)
+def seq_list_to_df(seq_list: list[Type[Sequence]]) -> pd.DataFrame:
+    categories = {
+        'Tetraloop':['seq_nums', 'res_names', 'res_nums'],
+        'PDB':['seq_nums', 'chain_ids', 'clust_ids', 'res_names', 'res_nums', 'ins_codes'],
+        'Fragment':['seq_nums', 'res_names', 'res_nums', 'ins_codes']
+        }
+    df = pd.DataFrame()
+    for index, seq in enumerate(seq_list):
+        if type(seq) ==  Tetraloop:
+            values = seq.seq_nums, seq.res_names, seq.res_nums
+            values = [','.join(map(str, i)) for i in values]
+            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'cluster':seq.clust_id, 'index':index, 'category':[categories['Tetraloop']], 'values':[values]})
+        elif type(seq) ==  PDB:
+            values = seq.seq_nums, seq.chain_ids, seq.clust_ids, seq.res_names, seq.res_nums, seq.ins_codes
+            values = [','.join(map(str, i)) for i in values]
+            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'category':[categories['PDB']], 'values':[values]})
+        elif type(seq) == Fragment:
+            values = seq.seq_nums, seq.res_names, seq.res_nums, seq.ins_codes
+            values = [','.join(map(str, i)) for i in values]
+            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'cluster':seq.clust_id, 'chain':seq.chain_id ,'index':index, 'category':[categories['Fragment']], 'values':[values]})
+        df = pd.concat([df, entry], ignore_index=True)
+    df = df.explode(['category', 'values'])
     return df
+
+
+def save(filepath, data):
+    with open(filepath, 'wb') as f:
+        pickle.dump(data, f)
+
+
+def load(filepath):
+    with open(filepath, 'rb') as f:
+        return pickle.load(f)
+
+
+def list_rindex(alist: list, value):
+    return len(alist) - alist[-1::-1].index(value) -1

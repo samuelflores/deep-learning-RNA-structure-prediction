@@ -2,142 +2,141 @@ import argparse
 import os
 
 import numpy as np
-import numpy.typing as npt
 import utils
 
-from Bio import pairwise2 as pw2
-
-# Sequence array format:
-# 0: [chain ids]
-# 1: [cluster]
-# 2: [residue names]
-# 3: [residue numbers]
-# 4: [insertion codes]
+from Bio.Align import PairwiseAligner
+from sequence_classes import Tetraloop, PDB, Fragment
+from typing import Type
 
 
-def get_tloop_sequences(clust_dir: str) -> dict[str, list[npt.ArrayLike]]:
-    seqs = {}
+def get_tloop_sequences(clust_dir: str) -> list[Type[Tetraloop]]:
+    seqs = []
     for folder in os.listdir(clust_dir):
+        clust_id = int(folder[1:])
         for file in os.listdir(f'{clust_dir}/{folder}'):
             pdb_id = file[:4].lower()
-            if pdb_id not in seqs.keys():
-                seqs[pdb_id] = []
             filepath = f'{clust_dir}/{folder}/{file}'
-            arr = np.row_stack(utils.parse_pdb(filepath))
-            if not any(np.array_equal(arr, i) for i in seqs[pdb_id]):
-                seqs[pdb_id] += [arr]
+            seq_nums, res_names, res_nums = utils.parse_pdb(filepath)
+            seqs += [Tetraloop(pdb_id, clust_id, seq_nums, res_names, res_nums)]
+    return set(seqs)
+
+
+def get_pdb_sequences(pdb_ids: list[str], struct_dir: str) -> list[Type[PDB]]:
+    seqs = []
+    for pdb_id in pdb_ids:
+        filepath = f'{struct_dir}/{pdb_id}.cif'
+        seq_nums, chain_ids, clust_ids, res_names, res_nums, ins_codes = utils.parse_cif(filepath)
+        seqs += [PDB(pdb_id, seq_nums, chain_ids, clust_ids, res_names, res_nums, ins_codes)]
     return seqs
 
 
-def get_full_sequences(pdb_ids: list[str], struct_dir: str) -> dict[str, npt.ArrayLike]:
-    seqs = {}
-    for pdb_id in pdb_ids:
-        arr = np.row_stack(utils.parse_cif(f'{struct_dir}/{pdb_id}.cif'))
-        seqs[pdb_id] = arr
-    return(seqs)
-
-
-def remove_duplicates(full_seqs: dict[str, npt.ArrayLike], percentage_id_limit: float = 0.9) -> dict[str, npt.ArrayLike]:
-    for pdb_id, arr in full_seqs.items():
-
-        # Separate full PDB array into subarrays by chain ID
-        chains = []
-        chain_ids = np.unique(arr[0])
-        for id in chain_ids:
-            chain_arr = arr[:, np.where(arr[0] == id)[0]]
-            if not any(np.array_equal(chain_arr, i[1]) for i in chains): # Filter out identical chains
-                chains += [(id, chain_arr)]
+def remove_redundancy(pdb_seqs: list[Type[PDB]], max_percent_id: float = 0.9) -> list[Type[PDB]]:
+    
+    aligner = PairwiseAligner()
+    
+    for pdb_seq in pdb_seqs:
+        chains = {chain_id: pdb_seq.res_seq[indices[0]:indices[1]+1] for chain_id, indices in pdb_seq.chain_indices.items()}
         
-        # Sort chains by length
-        chains.sort(key=lambda x: len(x[1][2]), reverse=True)
+        # remove identical chains
+        chains = {v: k for k, v in chains.items()}
+        chains = {v: k for k, v in chains.items()}
         
+        # sort chains by length
+        chains = dict(sorted(chains.items(), key=lambda x:len(x[1]), reverse=True))
+
         # Remove chains with high enough percentage identity
         i = 0
         while i < len(chains):
-            y = i + 1
-            while y < len(chains):
-                seq1 = ''.join(chains[i][1][2])
-                seq2 = ''.join(chains[y][1][2])
-                alignments = pw2.align.globalxx(seq1, seq2)
-                if alignments:
-                    seq1_aligned, seq2_aligned, start, end = alignments[0]
-                    alignment_len = end - start
-                    num_matches = sum(a == b for a, b in zip(seq1_aligned, seq2_aligned))
-                    percentage_id = (num_matches / alignment_len)
-                    if percentage_id > percentage_id_limit:
-                        chains.pop(y)
+            j = i + 1
+            while j < len(chains):
+                chain_ids, chain_seqs = list(chains.keys()), list(chains.values())
+                seq1, seq2 = chain_seqs[i], chain_seqs[j]
+                alignment = aligner.align(seq1, seq2)[0]
+                subseq_idxs = alignment.aligned[0]
+                if subseq_idxs:
+                    alignment_length = subseq_idxs[-1][1] - subseq_idxs[0][0]
+                    identical_positions = sum([subseq[1] - subseq[0] for subseq in subseq_idxs])
+                    percent_id = identical_positions / alignment_length
+                    if percent_id > max_percent_id:
+                        chains.pop(chain_ids[j])
                         continue # Keep pointer position
-                y += 1
+                j += 1
             i += 1
         
-        chains_concat = np.concatenate([i[1] for i in chains], axis=1)
-        full_seqs[pdb_id] = chains_concat
+        deleted_chains = set(pdb_seq.chain_indices.keys()) - chains.keys()
+        for i in deleted_chains:
+            pdb_seq.remove_chain(i)
     
-    return full_seqs
+    return pdb_seqs
 
 
-def align_tloops_to_full(tloop_seqs: dict[str, list[npt.ArrayLike]], full_seqs: dict[str, npt.ArrayLike]) -> dict[str, npt.ArrayLike]:
-    seqs = full_seqs.copy()
-    for pdb_id, full_arr in seqs.items():
-        full_resnames, full_resnums = full_arr[2], full_arr[3]
-        for tloop_arr in tloop_seqs[pdb_id]:
-            tloop_resnames, tloop_resnums = tloop_arr[2], tloop_arr[3]
-            possible_idxs = np.where(full_resnums == tloop_resnums[0])[0]
+def align_tloops_to_pdb(tloop_seqs: list[Type[Tetraloop]], pdb_seqs: list[Type[PDB]]) -> list[Type[PDB]]:
+    for pdb_seq in pdb_seqs:
+        pdb_tloops = [i for i in tloop_seqs if i.pdb_id == pdb_seq.pdb_id]
+        for tloop_seq in pdb_tloops:
+            possible_idxs = [idx for idx, res_num in enumerate(pdb_seq.res_nums) if res_num == tloop_seq.res_nums[0]]
             for idx in possible_idxs:
-                idx_resnames = full_resnames[idx:idx+8]
-                idx_resnums = full_resnums[idx:idx+8]
+                idx_res_names, idx_res_nums = pdb_seq.res_names[idx:idx+8], pdb_seq.res_nums[idx:idx+8]
                 if (
-                    len(idx_resnames) == 8 and len(idx_resnums) == 8 and
-                    np.all(idx_resnames == tloop_resnames) and np.all(idx_resnums == tloop_resnums)
+                    len(idx_res_names) == 8 and len(idx_res_nums) == 8 and
+                    np.all(idx_res_names == tloop_seq.res_names) and np.all(idx_res_nums == tloop_seq.res_nums)
                     ):
-                    full_arr[1, idx] = tloop_arr[1, 0]
-    return seqs
+                    pdb_seq.clust_ids[idx] = tloop_seq.clust_id
+    return pdb_seqs
 
 
 # TODO is this correct? even if the tloop is off-center, should the whole fragment still be counted as a tloop?
-def get_fragments(all_seqs, frag_len: int = 8) -> dict[str, list[npt.ArrayLike]]:
-    frag_extension = int((frag_len-8)/2)
-    seqs = {}
-    for pdb_id, arr in all_seqs.items():
-        frags = []
-        for i in range(len(arr[0])-frag_len+1):
-            frag = arr[:,i:i+frag_len].copy() # Assignment by value, not reference
-            if len(np.unique(frag[0])) > 1 or len(frag[0]) < frag_len: # Remove chain-crossing fragments
+def get_fragments(all_seqs: list[Type[PDB]], fragment_length: int = 8) -> list[Type[Fragment]]:
+    fragment_extension = int((fragment_length-8)/2)
+    fragments = []
+    for seq in all_seqs:
+        for i in range(len(seq)-fragment_length+1):
+            unique_chain_ids = list(set(seq.chain_ids[i:i+fragment_length]))
+            if len(unique_chain_ids) > 1:
                 continue
-            frag[1,:] = frag[1, frag_extension] # Replace all cluster numbers with cluster ID, looking at offset
-            frags += [frag]
-        seqs[pdb_id] = frags
-    return seqs
+            pdb_id = seq.pdb_id
+            clust_id = seq.clust_ids[i + fragment_extension]
+            chain_id = unique_chain_ids[0]
+            seq_nums, res_names, res_nums, ins_codes = tuple([j[i:i+fragment_length] for j in [seq.seq_nums, seq.res_names, seq.res_nums, seq.ins_codes]])
+            fragments += [Fragment(pdb_id, clust_id, chain_id, seq_nums, res_names, res_nums, ins_codes)]
+    return fragments
 
 
 def main(args):
+    # # Load existing data
+    # tloop_seqs = utils.load('tloop_seqs.pickle')
+    # pdb_seqs = utils.load('pdb_seqs.pickle')
+    # all_seqs = utils.load('all_seqs.pickle')
+    # all_fragments = utils.load('all_fragments_8.pickle')
+
     tloop_seqs = get_tloop_sequences(args.clusters_dir)
-    np.savez_compressed('tloop_seqs.npz', **tloop_seqs)
-    utils.arrdict_to_df(tloop_seqs).to_csv('tloop_seqs.csv', sep='\t', index=False)
+    utils.save('tloop_seqs.pickle', tloop_seqs)
+    utils.seq_list_to_df(tloop_seqs).to_csv('tloop_seqs.csv', sep='\t', index=False)
     print('Tetraloop sequences retrieved')
+    
+    pdb_ids = set([i.pdb_id for i in tloop_seqs])
+    
+    pdb_seqs = get_pdb_sequences(pdb_ids, args.structures_dir)
+    pdb_seqs = remove_redundancy(pdb_seqs)
+    utils.save('pdb_seqs.pickle', pdb_seqs)
+    utils.seq_list_to_df(pdb_seqs).to_csv('pdb_seqs.csv', sep='\t', index=False)
+    print('PDB sequences retrieved')
 
-    pdb_ids = tloop_seqs.keys()
-
-    full_seqs = get_full_sequences(pdb_ids, args.structures_dir)
-    full_seqs = remove_duplicates(full_seqs)
-    np.savez_compressed('full_seqs.npz', **full_seqs)
-    utils.arrdict_to_df(full_seqs).to_csv('full_seqs.csv', sep='\t', index=False)
-    print('Full sequences retrieved')
-
-    all_seqs = align_tloops_to_full(tloop_seqs, full_seqs)
-    np.savez_compressed('all_seqs.npz', **all_seqs)
-    utils.arrdict_to_df(all_seqs).to_csv('all_seqs.csv', sep='\t', index=False)
+    all_seqs = align_tloops_to_pdb(tloop_seqs, pdb_seqs)
+    utils.save('all_seqs.pickle', all_seqs)
+    utils.seq_list_to_df(all_seqs).to_csv('all_seqs.csv', sep='\t', index=False)
     print('All sequences retrieved')
 
-    all_frags = get_fragments(all_seqs, args.fragment_length)
-    np.savez_compressed(f'all_frags_{args.fragment_length}.npz', **all_frags)
-    print('All fragments retrieved')
+    # all_fragments = get_fragments(all_seqs, args.fragment_length)
+    # utils.save(f'all_fragments_{args.fragment_length}.pickle', all_fragments)
+    # utils.seq_list_to_df(all_fragments).to_csv('all_fragments.csv', sep='\t', index=False)
+    # print('All fragments retrieved')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clusters_dir', type=str, default='../../../all_clusters')
     parser.add_argument('-s', '--structures_dir', type=str, default='../../../all_structures')
-    parser.add_argument('-fl', '--fragment_length', type=int, default=8)
+    parser.add_argument('-f', '--fragment_length', type=int, default=8)
     args = parser.parse_args()
     main(args)
