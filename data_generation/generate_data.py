@@ -113,12 +113,16 @@ def main(args):
     # all_seqs = utils.load('all_seqs.pickle')
     # all_fragments = utils.load('all_fragments_8.pickle')
 
+    # Make data folder
+    if not os.path.exists(args.data_dir):
+        os.makedirs(args.data_dir)
+    
     print('Retrieving tetraloop sequences')
     tloop_seqs = get_tloop_sequences(args.clusters_dir)
     print('Pickling tetraloop sequences')
-    utils.save('tloop_seqs.pickle', tloop_seqs)
+    utils.save(f'{args.data_dir}/tloop_seqs.pickle', tloop_seqs)
     print('Saving tetraloop sequences as CSV')
-    utils.seq_list_to_df(tloop_seqs).to_csv('tloop_seqs.csv', sep='\t', index=False)
+    utils.seq_list_to_df(tloop_seqs).to_csv(f'{args.data_dir}/tloop_seqs.csv', sep='\t', index=False)
     print('Tetraloop sequences retrieved\n')
     
     pdb_ids = set([i.pdb_id for i in tloop_seqs])
@@ -128,25 +132,25 @@ def main(args):
     print('Removing redundant chains')
     pdb_seqs = remove_redundancy(pdb_seqs)
     print('Pickling PDB sequences')
-    utils.save('pdb_seqs.pickle', pdb_seqs)
+    utils.save(f'{args.data_dir}/pdb_seqs.pickle', pdb_seqs)
     print('Saving PDB sequences as CSV')
-    utils.seq_list_to_df(pdb_seqs).to_csv('pdb_seqs.csv', sep='\t', index=False)
+    utils.seq_list_to_df(pdb_seqs).to_csv(f'{args.data_dir}/pdb_seqs.csv', sep='\t', index=False)
     print('PDB sequences retrieved\n')
 
     print('Aligning tetraloops to all PDB sequences')
     all_seqs = align_tloops_to_pdb(tloop_seqs, pdb_seqs)
     print('Pickling all sequences')
-    utils.save('all_seqs.pickle', all_seqs)
+    utils.save(f'{args.data_dir}/all_seqs.pickle', all_seqs)
     print('Saving all sequences as CSV')
-    utils.seq_list_to_df(all_seqs).to_csv('all_seqs.csv', sep='\t', index=False)
+    utils.seq_list_to_df(all_seqs).to_csv(f'{args.data_dir}/all_seqs.csv', sep='\t', index=False)
     print('All sequences retrieved\n')
 
     print(f'Retrieving all fragments of length {args.fragment_length}')
     all_fragments = get_fragments(all_seqs, args.fragment_length)
     print('Pickling all fragments')
-    utils.save(f'all_fragments_{args.fragment_length}.pickle', all_fragments)
+    utils.save(f'{args.data_dir}/all_fragments_{args.fragment_length}.pickle', all_fragments)
     print('Saving all fragments as CSV')
-    utils.seq_list_to_df(all_fragments).to_csv(f'all_fragments_{args.fragment_length}.csv', sep='\t', index=False)
+    utils.seq_list_to_df(all_fragments).to_csv(f'{args.data_dir}/all_fragments_{args.fragment_length}.csv', sep='\t', index=False)
     print('All fragments retrieved\n')
 
 
@@ -154,6 +158,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('-c', '--clusters_dir', type=str, default='../../../all_clusters')
     parser.add_argument('-s', '--structures_dir', type=str, default='../../../all_structures')
+    parser.add_argument('-d', '--data_dir', type=str, default='data')
     parser.add_argument('-f', '--fragment_length', type=int, default=8)
     args = parser.parse_args()
     main(args)
