@@ -51,7 +51,8 @@ def seq_list_to_df(seq_list: list[Type[Sequence]]) -> pd.DataFrame:
         'Fragment':['seq_nums', 'res_names', 'res_nums', 'ins_codes']
         }
     df = pd.DataFrame()
-    for index, seq in enumerate(seq_list):
+    for index, seq in progressBar(list(enumerate(seq_list)), prefix = 'Progress:', suffix = 'Complete', length = 50):
+    # for index, seq in enumerate(seq_list):
         if type(seq) ==  Tetraloop:
             values = seq.seq_nums, seq.res_names, seq.res_nums
             values = [','.join(map(str, i)) for i in values]
@@ -81,3 +82,33 @@ def load(filepath):
 
 def list_rindex(alist: list, value):
     return len(alist) - alist[-1::-1].index(value) -1
+
+
+# terminal progress bar from https://stackoverflow.com/questions/3173320/text-progress-bar-in-terminal-with-block-characters
+def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+    """
+    Call in a loop to create terminal progress bar
+    @params:
+        iterable    - Required  : iterable object (Iterable)
+        prefix      - Optional  : prefix string (Str)
+        suffix      - Optional  : suffix string (Str)
+        decimals    - Optional  : positive number of decimals in percent complete (Int)
+        length      - Optional  : character length of bar (Int)
+        fill        - Optional  : bar fill character (Str)
+        printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
+    """
+    total = len(iterable)
+    # Progress Bar Printing Function
+    def printProgressBar (iteration):
+        percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
+        filledLength = int(length * iteration // total)
+        bar = fill * filledLength + '-' * (length - filledLength)
+        print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    # Initial Call
+    printProgressBar(0)
+    # Update Progress Bar
+    for i, item in enumerate(iterable):
+        yield item
+        printProgressBar(i + 1)
+    # Print New Line on Complete
+    print()

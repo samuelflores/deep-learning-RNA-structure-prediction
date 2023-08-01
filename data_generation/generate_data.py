@@ -11,7 +11,8 @@ from typing import Type
 
 def get_tloop_sequences(clust_dir: str) -> list[Type[Tetraloop]]:
     seqs = []
-    for folder in os.listdir(clust_dir):
+    for folder in utils.progressBar(os.listdir(clust_dir), prefix = 'Progress:', suffix = 'Complete', length = 50):
+    # for folder in os.listdir(clust_dir):
         clust_id = int(folder[1:])
         for file in os.listdir(f'{clust_dir}/{folder}'):
             pdb_id = file[:4].lower()
@@ -23,7 +24,8 @@ def get_tloop_sequences(clust_dir: str) -> list[Type[Tetraloop]]:
 
 def get_pdb_sequences(pdb_ids: list[str], struct_dir: str) -> list[Type[PDB]]:
     seqs = []
-    for pdb_id in pdb_ids:
+    for pdb_id in utils.progressBar(pdb_ids, prefix = 'Progress:', suffix = 'Complete', length = 50):
+    # for pdb_id in pdb_ids:
         filepath = f'{struct_dir}/{pdb_id}.cif'
         seq_nums, chain_ids, clust_ids, res_names, res_nums, ins_codes = utils.parse_cif(filepath)
         seqs += [PDB(pdb_id, seq_nums, chain_ids, clust_ids, res_names, res_nums, ins_codes)]
@@ -33,8 +35,8 @@ def get_pdb_sequences(pdb_ids: list[str], struct_dir: str) -> list[Type[PDB]]:
 def remove_redundancy(pdb_seqs: list[Type[PDB]], max_percent_id: float = 0.9) -> list[Type[PDB]]:
     
     aligner = PairwiseAligner()
-    
-    for pdb_seq in pdb_seqs:
+    for pdb_seq in utils.progressBar(pdb_seqs, prefix = 'Progress:', suffix = 'Complete', length = 50):
+    # for pdb_seq in pdb_seqs:
         chains = {chain_id: pdb_seq.res_seq[indices[0]:indices[1]+1] for chain_id, indices in pdb_seq.chain_indices.items()}
         
         # remove identical chains
@@ -71,7 +73,8 @@ def remove_redundancy(pdb_seqs: list[Type[PDB]], max_percent_id: float = 0.9) ->
 
 
 def align_tloops_to_pdb(tloop_seqs: list[Type[Tetraloop]], pdb_seqs: list[Type[PDB]]) -> list[Type[PDB]]:
-    for pdb_seq in pdb_seqs:
+    for pdb_seq in utils.progressBar(pdb_seqs, prefix = 'Progress:', suffix = 'Complete', length = 50):
+    # for pdb_seq in pdb_seqs:
         pdb_tloops = [i for i in tloop_seqs if i.pdb_id == pdb_seq.pdb_id]
         for tloop_seq in pdb_tloops:
             possible_idxs = [idx for idx, res_num in enumerate(pdb_seq.res_nums) if res_num == tloop_seq.res_nums[0]]
@@ -89,7 +92,8 @@ def align_tloops_to_pdb(tloop_seqs: list[Type[Tetraloop]], pdb_seqs: list[Type[P
 def get_fragments(all_seqs: list[Type[PDB]], fragment_length: int = 8) -> list[Type[Fragment]]:
     fragment_extension = int((fragment_length-8)/2)
     fragments = []
-    for seq in all_seqs:
+    for seq in utils.progressBar(all_seqs, prefix = 'Progress:', suffix = 'Complete', length = 50):
+    # for seq in all_seqs:
         for i in range(len(seq)-fragment_length+1):
             unique_chain_ids = list(set(seq.chain_ids[i:i+fragment_length]))
             if len(unique_chain_ids) > 1:
@@ -109,28 +113,41 @@ def main(args):
     # all_seqs = utils.load('all_seqs.pickle')
     # all_fragments = utils.load('all_fragments_8.pickle')
 
+    print('Retrieving tetraloop sequences')
     tloop_seqs = get_tloop_sequences(args.clusters_dir)
+    print('Pickling tetraloop sequences')
     utils.save('tloop_seqs.pickle', tloop_seqs)
+    print('Saving tetraloop sequences as CSV')
     utils.seq_list_to_df(tloop_seqs).to_csv('tloop_seqs.csv', sep='\t', index=False)
-    print('Tetraloop sequences retrieved')
+    print('Tetraloop sequences retrieved\n')
     
     pdb_ids = set([i.pdb_id for i in tloop_seqs])
     
+    print('Retrieving PDB sequences')
     pdb_seqs = get_pdb_sequences(pdb_ids, args.structures_dir)
+    print('Removing redundant chains')
     pdb_seqs = remove_redundancy(pdb_seqs)
+    print('Pickling PDB sequences')
     utils.save('pdb_seqs.pickle', pdb_seqs)
+    print('Saving PDB sequences as CSV')
     utils.seq_list_to_df(pdb_seqs).to_csv('pdb_seqs.csv', sep='\t', index=False)
-    print('PDB sequences retrieved')
+    print('PDB sequences retrieved\n')
 
+    print('Aligning tetraloops to all PDB sequences')
     all_seqs = align_tloops_to_pdb(tloop_seqs, pdb_seqs)
+    print('Pickling all sequences')
     utils.save('all_seqs.pickle', all_seqs)
+    print('Saving all sequences as CSV')
     utils.seq_list_to_df(all_seqs).to_csv('all_seqs.csv', sep='\t', index=False)
-    print('All sequences retrieved')
+    print('All sequences retrieved\n')
 
+    print(f'Retrieving all fragments of length {args.fragment_length}')
     all_fragments = get_fragments(all_seqs, args.fragment_length)
+    print('Pickling all fragments')
     utils.save(f'all_fragments_{args.fragment_length}.pickle', all_fragments)
-    # utils.seq_list_to_df(all_fragments).to_csv('all_fragments.csv', sep='\t', index=False)
-    print('All fragments retrieved')
+    print('Saving all fragments as CSV')
+    utils.seq_list_to_df(all_fragments).to_csv(f'all_fragments_{args.fragment_length}.csv', sep='\t', index=False)
+    print('All fragments retrieved\n')
 
 
 if __name__ == '__main__':
