@@ -107,11 +107,12 @@ def get_fragments(all_seqs: list[Type[PDB]], fragment_length: int = 8) -> list[T
 
 
 def main(args):
+
     # # Load existing data
-    # tloop_seqs = utils.load('tloop_seqs.pickle')
-    # pdb_seqs = utils.load('pdb_seqs.pickle')
-    # all_seqs = utils.load('all_seqs.pickle')
-    # all_fragments = utils.load('all_fragments_8.pickle')
+    # tloop_seqs = utils.load(f'{args.data_dir}/tloop_seqs.pickle')
+    # pdb_seqs = utils.load(f'{args.data_dir}/pdb_seqs.pickle')
+    # all_seqs = utils.load(f'{args.data_dir}/all_seqs.pickle')
+    # all_fragments = utils.load(f'{args.data_dir}/all_fragments_{args.fragment_length}.pickle')
 
     # Make data folder
     if not os.path.exists(args.data_dir):
