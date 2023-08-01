@@ -53,7 +53,7 @@ def remove_redundancy(pdb_seqs: list[Type[PDB]], max_percent_id: float = 0.9) ->
                 seq1, seq2 = chain_seqs[i], chain_seqs[j]
                 alignment = aligner.align(seq1, seq2)[0]
                 subseq_idxs = alignment.aligned[0]
-                if subseq_idxs:
+                if subseq_idxs.any():
                     alignment_length = subseq_idxs[-1][1] - subseq_idxs[0][0]
                     identical_positions = sum([subseq[1] - subseq[0] for subseq in subseq_idxs])
                     percent_id = identical_positions / alignment_length
@@ -127,10 +127,10 @@ def main(args):
     utils.seq_list_to_df(all_seqs).to_csv('all_seqs.csv', sep='\t', index=False)
     print('All sequences retrieved')
 
-    # all_fragments = get_fragments(all_seqs, args.fragment_length)
-    # utils.save(f'all_fragments_{args.fragment_length}.pickle', all_fragments)
+    all_fragments = get_fragments(all_seqs, args.fragment_length)
+    utils.save(f'all_fragments_{args.fragment_length}.pickle', all_fragments)
     # utils.seq_list_to_df(all_fragments).to_csv('all_fragments.csv', sep='\t', index=False)
-    # print('All fragments retrieved')
+    print('All fragments retrieved')
 
 
 if __name__ == '__main__':
