@@ -23,10 +23,11 @@ class Sequence:
     def res_seq(self):
         return ''.join(self.res_names)
     
+    #* To remove redundancy, residue names and cluster ID are the only identifiers of uniqueness (PDB ID doesn't matter), as defined by the @id property. Account for tloop abundance later (include it as var in the Tetraloop object?)
     @property
     def id(self) -> tuple:
-        return tuple([str(i) for i in [self.pdb_id, self.seq_nums, self.res_names, self.res_nums]])
-
+        return tuple([str(i) for i in [self.clust_id, self.res_names]])
+    
 
 class Tetraloop(Sequence):
     def __init__(self, pdb_id: str, clust_id: int, seq_nums: list[int], res_names: list[str], res_nums: list[int]) -> None:
@@ -36,9 +37,9 @@ class Tetraloop(Sequence):
     def __str__(self) -> str:
         return f'{self.pdb_id}_{self.clust_id}_{self.res_names[0]}{self.res_nums[0]}'
     
-    @property
-    def id(self) -> tuple:
-        return tuple([str(i) for i in [self.pdb_id, self.clust_id, self.seq_nums, self.res_names, self.res_nums]])
+    # @property
+    # def id(self) -> tuple:
+    #     return tuple([str(i) for i in [self.pdb_id, self.clust_id, self.seq_nums, self.res_names, self.res_nums]])
 
 
 class PDB(Sequence):
@@ -63,7 +64,6 @@ class PDB(Sequence):
     def remove_chain(self, chain_id: str) -> None:
         start_idx, stop_idx = self.chain_indices[chain_id]
         self.seq_nums, self.chain_ids, self.clust_ids, self.res_names, self.res_nums, self.ins_codes = tuple([i[:start_idx] + i[stop_idx+1:] for i in [self.seq_nums, self.chain_ids, self.clust_ids, self.res_names, self.res_nums, self.ins_codes]])
-        
 
 
 class Fragment(Sequence):
@@ -73,6 +73,6 @@ class Fragment(Sequence):
         self.chain_id = chain_id
         self.ins_codes = ins_codes
 
-    @property
-    def id(self) -> tuple:
-        return tuple([str(i) for i in [self.pdb_id, self.chain_id, self.clust_id, self.seq_nums, self.res_names, self.res_nums, self.ins_codes]])
+    # @property
+    # def id(self) -> tuple:
+    #     return tuple([str(i) for i in [self.pdb_id, self.chain_id, self.clust_id, self.seq_nums, self.res_names, self.res_nums, self.ins_codes]])

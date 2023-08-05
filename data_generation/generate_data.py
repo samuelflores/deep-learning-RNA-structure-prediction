@@ -19,7 +19,7 @@ def get_tloop_sequences(clust_dir: str) -> list[Type[Tetraloop]]:
             filepath = f'{clust_dir}/{folder}/{file}'
             seq_nums, res_names, res_nums = utils.parse_pdb(filepath)
             seqs += [Tetraloop(pdb_id, clust_id, seq_nums, res_names, res_nums)]
-    return set(seqs)
+    return list(set(seqs))
 
 
 def get_pdb_sequences(pdb_ids: list[str], struct_dir: str) -> list[Type[PDB]]:
@@ -32,7 +32,7 @@ def get_pdb_sequences(pdb_ids: list[str], struct_dir: str) -> list[Type[PDB]]:
     return seqs
 
 
-def remove_redundancy(pdb_seqs: list[Type[PDB]], max_percent_id: float = 0.9) -> list[Type[PDB]]:
+def remove_chain_redundancy(pdb_seqs: list[Type[PDB]], max_percent_id: float = 0.9) -> list[Type[PDB]]:
     
     aligner = PairwiseAligner()
     for pdb_seq in utils.progressBar(pdb_seqs, prefix = 'Progress:', suffix = 'Complete', length = 50):
@@ -55,7 +55,7 @@ def remove_redundancy(pdb_seqs: list[Type[PDB]], max_percent_id: float = 0.9) ->
                 seq1, seq2 = chain_seqs[i], chain_seqs[j]
                 alignment = aligner.align(seq1, seq2)[0]
                 subseq_idxs = alignment.aligned[0]
-                if subseq_idxs.any():
+                if subseq_idxs:
                     alignment_length = subseq_idxs[-1][1] - subseq_idxs[0][0]
                     identical_positions = sum([subseq[1] - subseq[0] for subseq in subseq_idxs])
                     percent_id = identical_positions / alignment_length
@@ -88,7 +88,6 @@ def align_tloops_to_pdb(tloop_seqs: list[Type[Tetraloop]], pdb_seqs: list[Type[P
     return pdb_seqs
 
 
-# TODO is this correct? even if the tloop is off-center, should the whole fragment still be counted as a tloop?
 def get_fragments(all_seqs: list[Type[PDB]], fragment_length: int = 8) -> list[Type[Fragment]]:
     fragment_extension = int((fragment_length-8)/2)
     fragments = []
@@ -103,7 +102,7 @@ def get_fragments(all_seqs: list[Type[PDB]], fragment_length: int = 8) -> list[T
             chain_id = unique_chain_ids[0]
             seq_nums, res_names, res_nums, ins_codes = tuple([j[i:i+fragment_length] for j in [seq.seq_nums, seq.res_names, seq.res_nums, seq.ins_codes]])
             fragments += [Fragment(pdb_id, clust_id, chain_id, seq_nums, res_names, res_nums, ins_codes)]
-    return fragments
+    return list(set(fragments))
 
 
 def main(args):
@@ -131,7 +130,7 @@ def main(args):
     print('Retrieving PDB sequences')
     pdb_seqs = get_pdb_sequences(pdb_ids, args.structures_dir)
     print('Removing redundant chains')
-    pdb_seqs = remove_redundancy(pdb_seqs)
+    pdb_seqs = remove_chain_redundancy(pdb_seqs)
     print('Pickling PDB sequences')
     utils.save(f'{args.data_dir}/pdb_seqs.pickle', pdb_seqs)
     print('Saving PDB sequences as CSV')
@@ -150,8 +149,8 @@ def main(args):
     all_fragments = get_fragments(all_seqs, args.fragment_length)
     print('Pickling all fragments')
     utils.save(f'{args.data_dir}/all_fragments_{args.fragment_length}.pickle', all_fragments)
-    print('Saving all fragments as CSV')
-    utils.seq_list_to_df(all_fragments).to_csv(f'{args.data_dir}/all_fragments_{args.fragment_length}.csv', sep='\t', index=False)
+    # print('Saving all fragments as CSV')
+    # utils.seq_list_to_df(all_fragments).to_csv(f'{args.data_dir}/all_fragments_{args.fragment_length}.csv', sep='\t', index=False)
     print('All fragments retrieved\n')
 
 
