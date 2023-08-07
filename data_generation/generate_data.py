@@ -19,6 +19,7 @@ def get_tloop_sequences(clust_dir: str) -> list[Type[Tetraloop]]:
             filepath = f'{clust_dir}/{folder}/{file}'
             seq_nums, res_names, res_nums = utils.parse_pdb(filepath)
             seqs += [Tetraloop(pdb_id, clust_id, seq_nums, res_names, res_nums)]
+    # return seqs
     return list(set(seqs))
 
 
@@ -102,6 +103,7 @@ def get_fragments(all_seqs: list[Type[PDB]], fragment_length: int = 8) -> list[T
             chain_id = unique_chain_ids[0]
             seq_nums, res_names, res_nums, ins_codes = tuple([j[i:i+fragment_length] for j in [seq.seq_nums, seq.res_names, seq.res_nums, seq.ins_codes]])
             fragments += [Fragment(pdb_id, clust_id, chain_id, seq_nums, res_names, res_nums, ins_codes)]
+    # return fragments
     return list(set(fragments))
 
 
