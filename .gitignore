@@ -8,6 +8,7 @@
 *.fa
 *.pickle
 *.pdf
+
 # Ignore directories with this name:
 TetraloopsDatasets/
 ../CASP-R1107/  
