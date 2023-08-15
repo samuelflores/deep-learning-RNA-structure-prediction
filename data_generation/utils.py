@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
 
-from sequence_classes import Sequence, Tetraloop, PDB, Fragment
+from sequence_classes import Sequence, Tetraloop, Chain, Fragment
 from typing import Type
 
 
@@ -47,45 +47,63 @@ def parse_cif(filepath: str):
 def seq_list_to_df(seq_list: list[Type[Sequence]]) -> pd.DataFrame:
     categories = {
         'Tetraloop':['seq_nums', 'res_names', 'res_nums'],
-        'PDB':['seq_nums', 'chain_ids', 'clust_ids', 'res_names', 'res_nums', 'ins_codes'],
+        'Chain':['seq_nums', 'clust_ids', 'res_names', 'res_nums', 'ins_codes'],
         'Fragment':['seq_nums', 'res_names', 'res_nums', 'ins_codes']
         }
     df = pd.DataFrame()
-    for index, seq in progressBar(list(enumerate(seq_list)), prefix = 'Progress:', suffix = 'Complete', length = 50):
-    # for index, seq in enumerate(seq_list):
+    for index, seq in progress_bar_for(list(enumerate(seq_list))):
         if type(seq) ==  Tetraloop:
             values = seq.seq_nums, seq.res_names, seq.res_nums
             values = [','.join(map(str, i)) for i in values]
-            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'cluster':seq.clust_id, 'index':index, 'category':[categories['Tetraloop']], 'values':[values]})
-        elif type(seq) ==  PDB:
-            values = seq.seq_nums, seq.chain_ids, seq.clust_ids, seq.res_names, seq.res_nums, seq.ins_codes
+            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'clust_id':seq.clust_id, 'index':index, 'category':[categories['Tetraloop']], 'values':[values]})
+        elif type(seq) ==  Chain:
+            values = seq.seq_nums, seq.clust_ids, seq.res_names, seq.res_nums, seq.ins_codes
             values = [','.join(map(str, i)) for i in values]
-            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'category':[categories['PDB']], 'values':[values]})
+            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'chain_id':seq.chain_id, 'category':[categories['Chain']], 'values':[values]})
         elif type(seq) == Fragment:
             values = seq.seq_nums, seq.res_names, seq.res_nums, seq.ins_codes
             values = [','.join(map(str, i)) for i in values]
-            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'cluster':seq.clust_id, 'chain':seq.chain_id ,'index':index, 'category':[categories['Fragment']], 'values':[values]})
+            entry = pd.DataFrame({'pdb_id':seq.pdb_id, 'clust_id':seq.clust_id, 'chain_id':seq.chain_id ,'index':index, 'category':[categories['Fragment']], 'values':[values]})
         df = pd.concat([df, entry], ignore_index=True)
+    df = df.sort_values('pdb_id')
     df = df.explode(['category', 'values'])
     return df
 
 
-def save(filepath, data):
-    with open(filepath, 'wb') as f:
-        pickle.dump(data, f)
+def filter(seqs:list[Type[Sequence]], args:list[str]):
+    for i in seqs:
+        i.id = tuple([str(getattr(i, a)) for a in args])
+    return list(set(seqs))
 
 
-def load(filepath):
-    with open(filepath, 'rb') as f:
-        return pickle.load(f)
+def save(data: list[Type[Sequence]], filename: str, folder: str, format: str) -> None:
+    print(f'Saving {filename}.{format}')
+    filepath = f'{folder}/{filename}.{format}'
+    if format == 'csv':
+        seq_list_to_df(data).to_csv(filepath, sep='\t', index=False)
+    elif format == 'pickle':
+        with open(filepath, 'wb') as f:
+            pickle.dump(data, f)
+    elif format == 'fasta':
+        with open(filepath, 'w') as f:
+            ids = [f'{i.pdb_id}_{i.chain_id}' for i in data]
+            seqs = [i.res_seq for i in data]
+            for i in range(len(data)):
+                f.write(f'>{ids[i]}\n{seqs[i]}\n')
+
+
+def load(filepath, format: str = 'pickle'):
+    if format == 'pickle':
+        with open(filepath, 'rb') as f:
+            return pickle.load(f)
 
 
 def list_rindex(alist: list, value):
     return len(alist) - alist[-1::-1].index(value) -1
 
 
-# terminal progress bar from https://stackoverflow.com/questions/3173320/text-progress-bar-in-terminal-with-block-characters
-def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+# Terminal progress bar from https://stackoverflow.com/questions/3173320/text-progress-bar-in-terminal-with-block-characters
+def progress_bar_for(iterable, prefix = '', suffix = '', decimals = 1, length = 50, fill = '█', printEnd = "\r"):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -112,3 +130,13 @@ def progressBar(iterable, prefix = '', suffix = '', decimals = 1, length = 100, 
         printProgressBar(i + 1)
     # Print New Line on Complete
     print()
+
+
+# progressBar modified to work for a while-loop
+def progress_bar_while(progress:float, prefix = '', suffix = '', decimals = 1, length = 50, fill = '█', printEnd = "\r"):
+    percent = ("{0:." + str(decimals) + "f}").format(100 * (progress))
+    filledLength = int(length * progress)
+    bar = fill * filledLength + '-' * (length - filledLength)
+    print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
+    if progress == 1.0:
+        print()
