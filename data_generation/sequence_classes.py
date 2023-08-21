@@ -45,8 +45,8 @@ class Chain(Sequence):
         for idx in possible_idxs:
             idx_res_names, idx_res_nums = self.res_names[idx:idx+8], self.res_nums[idx:idx+8]
             if (
-                len(idx_res_names) == 8 and len(idx_res_nums) == 8 and
-                idx_res_names == tloop.res_names and idx_res_nums == tloop.res_nums
+                len(idx_res_names) == 8 and idx_res_names == tloop.res_names and
+                len(idx_res_nums) == 8 and idx_res_nums == tloop.res_nums
                 ):
                 self.clust_ids[idx] = tloop.clust_id
 
