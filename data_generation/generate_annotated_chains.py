@@ -57,7 +57,7 @@ def remove_similar_chains(chains:list[Type[Chain]], max_pident:float=95) -> list
         short_seq, long_seq = tuple(sorted([alignment.qseqid, alignment.sseqid], key=lambda x:chain_lens[x]))
         if (
             alignment.qseqid != alignment.sseqid and
-            alignment.pident > max_pident # and CHECK THAT ALL THE TLOOPS IN THE SHORTER SEQUENCE ARE FOUND IN THE LONGER SEQUENCE
+            alignment.pident > max_pident # TODO and CHECK THAT ALL THE TLOOPS IN THE SHORTER SEQUENCE ARE FOUND IN THE LONGER SEQUENCE
             # chain_clust_ids[short_seq] in chain_clust_ids[long_seq]
         ):
             del_chains += [short_seq]
