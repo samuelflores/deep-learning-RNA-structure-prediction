@@ -37,6 +37,7 @@ class Chain(Sequence):
     def __init__(self, pdb_id: str, chain_id: str, seq_nums: list[int], clust_ids: list[int], res_names: list[str], res_nums: list[int], ins_codes: list[str]) -> None:
         super().__init__(pdb_id, seq_nums, res_names, res_nums)
         self.chain_id = chain_id
+        self.seq_id = f'{self.pdb_id}_{self.chain_id}'
         self.clust_ids = clust_ids
         self.ins_codes = ins_codes
     
@@ -56,4 +57,16 @@ class Fragment(Sequence):
         super().__init__(pdb_id, seq_nums, res_names, res_nums)
         self.clust_id = clust_id
         self.chain_id = chain_id
+        self.seq_id = f'{self.pdb_id}_{self.chain_id}'
         self.ins_codes = ins_codes
+
+
+class PDBAlignment:
+    def __init__(self, qseqid, sseqid, pident, qstart, qend, sstart, send) -> None:
+        self.qseqid = qseqid
+        self.sseqid = sseqid
+        self.pident = pident
+        self.qstart = qstart
+        self.qend = qend
+        self.sstart = sstart
+        self.send = send

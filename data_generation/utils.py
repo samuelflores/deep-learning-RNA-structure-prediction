@@ -1,7 +1,7 @@
 import pandas as pd
 import pickle
 
-from sequence_classes import Sequence, Tetraloop, Chain, Fragment
+from classes import Sequence, Tetraloop, Chain, Fragment
 from typing import Type
 
 
@@ -74,6 +74,14 @@ def filter(seqs:list[Type[Sequence]], args:list[str]):
     for i in seqs:
         i.id = tuple([str(getattr(i, a)) for a in args])
     return list(set(seqs))
+
+
+def is_sublist(sublist, main_list):
+    sublist_length = len(sublist)
+    for i in range(len(main_list) - sublist_length + 1):
+        if main_list[i:i+sublist_length] == sublist:
+            return True
+    return False
 
 
 def save(data: list[Type[Sequence]], filename: str, folder: str, format: str) -> None:
