@@ -40,6 +40,7 @@ class Chain(Sequence):
         self.seq_id = f'{self.pdb_id}_{self.chain_id}'
         self.clust_ids = clust_ids
         self.ins_codes = ins_codes
+        self.tloops = []
     
     def align_tetraloop(self, tloop: Tetraloop) -> None:
         possible_idxs = [idx for idx, res_num in enumerate(self.res_nums) if res_num == tloop.res_nums[0]]
@@ -50,6 +51,7 @@ class Chain(Sequence):
                 len(idx_res_nums) == 8 and idx_res_nums == tloop.res_nums
                 ):
                 self.clust_ids[idx] = tloop.clust_id
+                self.tloops += [tloop] # Add tloop to list, including the alignment position
 
 
 class Fragment(Sequence):
