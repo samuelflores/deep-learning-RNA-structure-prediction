@@ -40,7 +40,7 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('chains_data', type=str)
+    parser.add_argument('-c', '--chains_data', type=str, default='data/chains_annotated_filtered.pickle')
     parser.add_argument('-d', '--data_dir', type=str, default='data/fragments')
     parser.add_argument('-f', '--fragment_length', type=int, default=8)
     args = parser.parse_args()
