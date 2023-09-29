@@ -7,7 +7,7 @@ import utils
 from Bio.Blast.Applications import NcbiblastnCommandline
 from Bio.PDB import PDBList
 from classes import Tetraloop, Chain, PDBAlignment
-from typing import Type
+from typing import Type 
 
 
 def get_tloops(clust_dir:str) -> list[Type[Tetraloop]]:
@@ -22,8 +22,8 @@ def get_tloops(clust_dir:str) -> list[Type[Tetraloop]]:
     return tloops
 
 
-def get_chains(pdb_ids:list[str], struct_dir:str) -> list[Type[Chain]]:
-    chains = []
+def get_chains(pdb_ids:dict[str,Type[Chain]], struct_dir:str) -> list[Type[Chain]]:
+    chains = {}
     for pdb_id in utils.progress_bar_for(pdb_ids):
         filepath = f'{struct_dir}/{pdb_id}.cif'
         seq_nums, chain_ids, clust_ids, res_names, res_nums, ins_codes = utils.parse_cif(filepath)
@@ -31,37 +31,40 @@ def get_chains(pdb_ids:list[str], struct_dir:str) -> list[Type[Chain]]:
             start_idx, stop_idx = chain_ids.index(chain_id), utils.list_rindex(chain_ids, chain_id)
             c_seq_nums, c_clust_ids, c_res_names, c_res_nums, c_ins_codes = tuple([i[start_idx:stop_idx+1] for i in [seq_nums, clust_ids, res_names, res_nums, ins_codes]])
             if c_seq_nums: # If chain isn't empty
-                chains += [Chain(pdb_id, chain_id, c_seq_nums, c_clust_ids, c_res_names, c_res_nums, c_ins_codes)]
+                new_chain = Chain(pdb_id, chain_id, c_seq_nums, c_clust_ids, c_res_names, c_res_nums, c_ins_codes)
+                chains[new_chain.seq_id] = new_chain
     return chains
 
 
-def annotate_chains_tloops(tloops:list[Type[Tetraloop]], chains:list[Type[Chain]]) -> list[Type[Chain]]:
-    for chain in utils.progress_bar_for(chains):
+def annotate_chains_tloops(tloops:list[Type[Tetraloop]], chains:dict[str, Type[Chain]]) -> dict[str, Type[Chain]]:
+    for chain in utils.progress_bar_for(chains.values()):
         pdb_tloops = [i for i in tloops if i.pdb_id == chain.pdb_id]
         for tloop in pdb_tloops:
             chain.align_tetraloop(tloop)
+            chains[chain.seq_id] = chain
     return chains
 
 
-def remove_similar_chains(chains:list[Type[Chain]], max_pident:float=95) -> list[Type[Chain]]:
-    chain_lens = {i.seq_id:len(i) for i in chains}
-    chain_clust_ids = {i.seq_id:set(i.clust_ids) for i in chains}
+def remove_similar_chains(chains:dict[str, Type[Chain]], max_pident:float=95) -> dict[str, Type[Chain]]:
     with NamedTemporaryFile(mode='w') as fasta:
-        fasta.write('\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains]))
+        fasta.write('\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains.values()]))
         fasta.seek(0)
         out = NcbiblastnCommandline(query=fasta.name, subject=fasta.name, outfmt=6)()[0]
     out_array = [i.split('\t') for i in out.split('\n') if any(i)]
     pdb_alignments = [PDBAlignment(i[0],i[1],float(i[2]),int(i[6]),int(i[7]),int(i[8]),int(i[9])) for i in out_array]
     del_chains = []
     for alignment in pdb_alignments:
-        short_seq, long_seq = tuple(sorted([alignment.qseqid, alignment.sseqid], key=lambda x:chain_lens[x]))
+        short_seq = tuple(sorted([len(chains[alignment.qseqid]), len(chains[alignment.sseqid])]))[0]
+        tloops_1 = sorted([i.res_seq for i in chains[alignment.qseqid].tloops])# if i.res_nums[0] >= alignment.qstart-1 and i.res_nums[-1] <= alignment.qend-1])
+        tloops_2 = sorted([i.res_seq for i in chains[alignment.sseqid].tloops])# if i.res_nums[0] >= alignment.sstart-1 and i.res_nums[-1] <= alignment.send-1])
         if (
             alignment.qseqid != alignment.sseqid and
-            alignment.pident > max_pident # TODO and CHECK THAT ALL THE TLOOPS IN THE SHORTER SEQUENCE ARE FOUND IN THE LONGER SEQUENCE
-            # chain_clust_ids[short_seq] in chain_clust_ids[long_seq]
+            alignment.pident > max_pident and
+            tloops_1 == tloops_2
         ):
             del_chains += [short_seq]
-    chains = [i for i in chains if i.seq_id not in set(del_chains)]
+    del_chains = set(del_chains)
+    chains = {seq_id:chain for seq_id, chain in chains.items() if seq_id not in del_chains}
     return chains
 
 
@@ -85,17 +88,25 @@ def main(args):
     
     print('Removing duplicate tetraloops')
     tloops_filtered = utils.filter(tloops_raw, ['pdb_id','res_names','res_nums'])
+    utils.save(tloops_filtered, 'tloops_filtered', args.data_dir, 'pickle')
+    utils.save(tloops_filtered, 'tloops_filtered', args.data_dir, 'csv')
 
     print('Annotating raw chains with tetraloop positions')
     chains_annotated_raw = annotate_chains_tloops(tloops_filtered, chains_raw)
-    utils.save(chains_annotated_raw, 'chains_annotated_raw', args.data_dir, 'pickle')
-    utils.save(chains_annotated_raw, 'chains_annotated_raw', args.data_dir, 'csv')
+    utils.save(list(chains_annotated_raw.values()), 'chains_annotated_raw', args.data_dir, 'pickle')
+    utils.save(list(chains_annotated_raw.values()), 'chains_annotated_raw', args.data_dir, 'csv')
     
     print('Removing duplicate and similar annotated chains')
-    chains_annotated_filtered = utils.filter(chains_annotated_raw, ['clust_ids','res_names']) # Remove identical chains
+    chains_annotated_filtered = {i.seq_id:i for i in utils.filter(list(chains_annotated_raw.values()), ['clust_ids','res_names'])} # Remove identical chains
     chains_annotated_filtered = remove_similar_chains(chains_annotated_filtered) # Remove similar chains (alignment above a certain percent identity)
-    utils.save(chains_annotated_filtered, 'chains_annotated_filtered', args.data_dir, 'pickle')
-    utils.save(chains_annotated_filtered, 'chains_annotated_filtered', args.data_dir, 'csv')
+    utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'pickle')
+    utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'csv')
+
+    # TODO COUNT ABUNDANCE
+    # TODO KEEP UNIQUE TETRALOOPS. even when adding the tloop check, there are still some lost. why?
+    # TODO run noAnno with current data
+    # TODO CROSSREF CHIHFANS REPORT
+    # TODO DATA ANALYSIS, COMPARE TO SAM'S DATA
 
 
 if __name__ == '__main__':
