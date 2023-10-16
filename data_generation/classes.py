@@ -1,3 +1,7 @@
+#* Custom classes for the tetraloop data generation script
+
+
+# Base class used by the Tetraloop, Chain, and Fragment objects
 class Sequence:
     def __init__(self, pdb_id: str, seq_nums: list[int], res_names: list[str], res_nums: list[int]) -> None:
         self.pdb_id = pdb_id
@@ -37,7 +41,7 @@ class Chain(Sequence):
     def __init__(self, pdb_id: str, chain_id: str, seq_nums: list[int], clust_ids: list[int], res_names: list[str], res_nums: list[int], ins_codes: list[str]) -> None:
         super().__init__(pdb_id, seq_nums, res_names, res_nums)
         self.chain_id = chain_id
-        self.seq_id = f'{self.pdb_id}_{self.chain_id}'
+        self.seq_id = f'{self.pdb_id}_{self.chain_id}' # Unique ID that combines both the PDB ID and chain information
         self.clust_ids = clust_ids
         self.ins_codes = ins_codes
         self.tloops = []
@@ -59,7 +63,7 @@ class Fragment(Sequence):
         super().__init__(pdb_id, seq_nums, res_names, res_nums)
         self.clust_id = clust_id
         self.chain_id = chain_id
-        self.seq_id = f'{self.pdb_id}_{self.chain_id}'
+        self.seq_id = f'{self.pdb_id}_{self.chain_id}' # Unique ID that combines both the PDB ID and chain information
         self.ins_codes = ins_codes
 
 

@@ -7,6 +7,24 @@ from classes import Chain, Fragment
 from typing import Type
 
 
+# * This script will generate the following files (in .pickle format):
+#     fragments_x_raw: All fragments of length x that can be generates from the input chains_annotated_filtered.pickle file
+#     fragments_x_filtered: fragments_x_raw with duplicate decoy fragments removed
+
+
+# * Arguments
+#     '-c', '--chains_data': .pickle file containing the Chains from which the Fragments should be generated 
+#     '-d', '--data_dir': Folder into which the generated files should be placed
+#     '-f', '--fragment_length': The desired length of the fragments
+#! Most of the default values for these args were set up for the folder structure that I used so that I didn't need to re-input every argument every time while testing. If you need to change them then scroll down to the bottom of the script to the if __name__ == '__main__': section
+
+
+# * Generates a list of Fragment objects along the length of every Chain in the input Chain
+# Inputs:
+#     chains: list of Chain objects from which to generate Fragments
+#     fragment_length: Desired fragment size (in bp)
+# Output: list of Fragment objects
+
 def get_fragments(chains:list[Type[Chain]], fragment_length:int=8) -> list[Type[Fragment]]:
     fragment_extension = int((fragment_length-8)/2)
     fragments = []
@@ -24,6 +42,7 @@ def main(args):
     if not os.path.exists(args.data_dir):
         os.makedirs(args.data_dir)
     
+    # Load in Chains file
     chains_annotated_filtered = utils.load(args.chains_data)
     
     print(f'Retrieving fragments of length {args.fragment_length}')

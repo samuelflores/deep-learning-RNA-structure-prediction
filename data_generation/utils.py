@@ -5,6 +5,10 @@ from classes import Sequence, Tetraloop, Chain, Fragment
 from typing import Type
 
 
+# * General utility functions
+
+
+# * Parse PDB file
 def parse_pdb(filepath: str):
     res_names, res_nums = [], []
     with open(filepath, 'r') as file:
@@ -22,6 +26,7 @@ def parse_pdb(filepath: str):
     return seq_nums, res_names, res_nums
 
 
+# * Parse mmCIF file
 def parse_cif(filepath: str):
     chain_ids, res_names, res_nums, ins_codes = [], [], [], []
     with open(filepath, 'r') as file:
@@ -44,6 +49,7 @@ def parse_cif(filepath: str):
     return seq_nums, chain_ids, clust_ids, res_names, res_nums, ins_codes
 
 
+# * Convert lists of custom Sequence objects into a pandas DataFrame for data storage and viewing
 def seq_list_to_df(seq_list: list[Type[Sequence]]) -> pd.DataFrame:
     categories = {
         'Tetraloop':['seq_nums', 'res_names', 'res_nums'],
@@ -70,12 +76,14 @@ def seq_list_to_df(seq_list: list[Type[Sequence]]) -> pd.DataFrame:
     return df
 
 
+# * Filter a list of Sequence objects by certain args
 def filter(seqs:list[Type[Sequence]], args:list[str]):
     for i in seqs:
         i.id = tuple([str(getattr(i, a)) for a in args])
     return list(set(seqs))
 
 
+# * Check whether a list is found (order preserved) in another list
 def is_sublist(sublist, main_list):
     sublist_length = len(sublist)
     for i in range(len(main_list) - sublist_length + 1):
@@ -84,6 +92,7 @@ def is_sublist(sublist, main_list):
     return False
 
 
+# * Save a list of custom Sequence objects into a pickle, CSV, or FASTA file
 def save(data: list[Type[Sequence]], filename: str, folder: str, format: str) -> None:
     print(f'Saving {filename}.{format}')
     filepath = f'{folder}/{filename}.{format}'
@@ -100,12 +109,14 @@ def save(data: list[Type[Sequence]], filename: str, folder: str, format: str) ->
                 f.write(f'>{ids[i]}\n{seqs[i]}\n')
 
 
+# * Load pickle data
 def load(filepath, format: str = 'pickle'):
     if format == 'pickle':
         with open(filepath, 'rb') as f:
             return pickle.load(f)
 
 
+# * Get the reverse index (count from back) of a value in a list
 def list_rindex(alist: list, value):
     return len(alist) - alist[-1::-1].index(value) -1
 

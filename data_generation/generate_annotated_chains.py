@@ -11,28 +11,28 @@ from typing import Type
 
 # NOTE: If you're using VSCode to view this file, I recommend installing the Better Comments extension so the comments formats highlight properly
 # NOTE: To run this script in terminal, first activate the appropriate conda env (in my case, 'tensorflow'), navigate to the folder where this script is located, and type 'python generate_annotated_chains.py'
-#! The classes.py and utils.py scripts are dependencies and must be located in the same folder
+# ! The classes.py and utils.py scripts are dependencies and must be located in the same folder
 
 
-#* This script will generate the following files (in both .csv and .pickle formats):
+# * This script will generate the following files (in both .csv and .pickle formats):
 #     tloops_raw: All tetraloops parsed from the Bottaro dataset
 #     tloops_filtered: tloops_raw with structural duplicates removed (most files in the clusters folder have multiple versions, _00000, _00001, _00005, etc.). 
 #     chains_annotated_raw: All chains from every single PDB ID found in the Bottaro dataset, annotated with possible tetraloop positions. 
 #     chains_annotated_filtered: chains_annotated_raw with duplicate and similar chains removed (to account for highly conserved rRNA that dominates the dataset). This file is used by the downstream generate_fragments.py script.
 
 
-#* Arguments
-    # '-c', '--clusters_dir': path to clusters folder
-    # '-s', '--structures_dir': path to mmCIF structures folder
-    # '-d', '--data_dir': folder into which the generated files should be placed
-    # '-p', '--download_pdbs': re-download all mmCIF files y/n
+# * Arguments
+#     '-c', '--clusters_dir': path to clusters folder
+#     '-s', '--structures_dir': path to mmCIF structures folder
+#     '-d', '--data_dir': folder into which the generated files should be placed
+#     '-p', '--download_pdbs': re-download all mmCIF files y/n
 #! Most of the default values for these args were set up for the folder structure that I used so that I didn't need to re-input every argument every time while testing. If you need to change them then scroll down to the bottom of the script to the if __name__ == '__main__': section
 
 
 # NOTE: Since this runs on Python 3.9, typing (i.e. when you specify what data type your function parameters should be, e.g. str) doesn't actually seem to work. For now they're just there for clarity.
 
 
-#* Generates a Tetraloop object for every .aling.pdb file in the Bottaro clusters folder
+# * Generates a Tetraloop object for every .aling.pdb file in the Bottaro clusters folder
 # Inputs:
 #     clust_dir: path to parent clusters directory
 # Output: list of Tetraloop objects
@@ -49,7 +49,7 @@ def get_tloops(clust_dir:str) -> list[Type[Tetraloop]]:
     return tloops
 
 
-#* Generates a dict of Chain objects from a given list of PDB IDs
+# * Generates a dict of Chain objects from a given list of PDB IDs
 # Inputs:
 #     pdb_ids: list of PDB IDs
 #     struct_dir: path to directory containing all downloaded mmCIF files.
@@ -69,7 +69,7 @@ def get_chains(pdb_ids:list[str], struct_dir:str) -> dict[str, Type[Chain]]:
     return chains
 
 
-#* Return an annotated version of the input Chains dict where all possible aligned Tetraloop positions are marked
+# * Return an annotated version of the input Chains dict where all possible aligned Tetraloop positions are marked
 # Inputs:
 #     tloops: list of Tetraloop objects
 #     chains: dict of Chain objects
@@ -84,12 +84,12 @@ def annotate_chains_tloops(tloops:list[Type[Tetraloop]], chains:dict[str, Type[C
     return chains
 
 
-#* Perform a BLAST alignment between all Chains in the input dict. Between every pairwise Chain comparison, remove the shorter Chain IF its alignment percent identity to the longer Chain is above the defined maximum AND both chains contains the same list of Tetraloops in the alignment area.
+# * Perform a BLAST alignment between all Chains in the input dict. Between every pairwise Chain comparison, remove the shorter Chain IF its alignment percent identity to the longer Chain is above the defined maximum AND both chains contains the same list of Tetraloops in the alignment area.
 # Inputs:
 #     chains: dict of Chain objects
 #     max_pident: Maximum percentage identity needed for two sequences to count as similar
 # Output: dict of Chain objects
-#! This step removes some of the unique tetraloops in the dataset, and I'm not entirely sure why. I've troubleshot it as far as I understand, but a couple tetraloops are just irrevocably lost. Keep this in mind when analyzing the filtered chains data.
+# ! This step removes some of the unique tetraloops in the dataset, and I'm not entirely sure why. I've troubleshot it as far as I understand, but a couple tetraloops are just irrevocably lost. Keep this in mind when analyzing the filtered chains data.
 
 def remove_similar_chains(chains:dict[str, Type[Chain]], max_pident:float=95) -> dict[str, Type[Chain]]:
 
