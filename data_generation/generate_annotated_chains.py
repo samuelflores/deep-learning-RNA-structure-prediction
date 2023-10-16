@@ -10,6 +10,8 @@ from classes import Tetraloop, Chain, PDBAlignment
 from typing import Type 
 
 # NOTE: If you're using VSCode to view this file, I recommend installing the Better Comments extension so the comments formats highlight properly
+# NOTE: To run this script in terminal, first activate the appropriate conda env (in my case, 'tensorflow'), navigate to the folder where this script is located, and type 'python generate_annotated_chains.py'
+#! The classes.py and utils.py scripts are dependencies and must be located in the same folder
 
 
 #* This script will generate the following files (in both .csv and .pickle formats):
