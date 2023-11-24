@@ -121,7 +121,7 @@ def list_rindex(alist: list, value):
     return len(alist) - alist[-1::-1].index(value) -1
 
 
-# Terminal progress bar from https://stackoverflow.com/questions/3173320/text-progress-bar-in-terminal-with-block-characters
+# * Terminal progress bar from https://stackoverflow.com/questions/3173320/text-progress-bar-in-terminal-with-block-characters
 def progress_bar_for(iterable, prefix = '', suffix = '', decimals = 1, length = 50, fill = '█', printEnd = "\r"):
     """
     Call in a loop to create terminal progress bar
@@ -151,7 +151,7 @@ def progress_bar_for(iterable, prefix = '', suffix = '', decimals = 1, length = 
     print()
 
 
-# progressBar modified to work for a while-loop
+# * progressBar modified to work for a while-loop
 def progress_bar_while(progress:float, prefix = '', suffix = '', decimals = 1, length = 50, fill = '█', printEnd = "\r"):
     percent = ("{0:." + str(decimals) + "f}").format(100 * (progress))
     filledLength = int(length * progress)
@@ -159,3 +159,9 @@ def progress_bar_while(progress:float, prefix = '', suffix = '', decimals = 1, l
     print(f'\r{prefix} |{bar}| {percent}% {suffix}', end = printEnd)
     if progress == 1.0:
         print()
+
+
+# * Save BLAST file
+def save_text_file(out_string: str, filepath):
+    with open(filepath, 'w') as f:
+        f.write(out_string)

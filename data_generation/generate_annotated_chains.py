@@ -91,19 +91,23 @@ def annotate_chains_tloops(tloops:list[Type[Tetraloop]], chains:dict[str, Type[C
 # Output: dict of Chain objects
 # ! This step removes some of the unique tetraloops in the dataset, and I'm not entirely sure why. I've troubleshot it as far as I understand, but a couple tetraloops are just irrevocably lost. Keep this in mind when analyzing the filtered chains data.
 
-def remove_similar_chains(chains:dict[str, Type[Chain]], max_pident:float=95) -> dict[str, Type[Chain]]:
 
+def remove_similar_chains(chains:dict[str, Type[Chain]], max_pident:float=95) -> dict[str, Type[Chain]]:
+    
     # Make temporary FASTA file for BLAST alignment and store the resulting pairwise comparisons as a list of PDBAlignment objects
     with NamedTemporaryFile(mode='w') as fasta:
         fasta.write('\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains.values()]))
+        utils.save_text_file('\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains.values()]), "fasta_file") # Save fasta file
         fasta.seek(0)
         out = NcbiblastnCommandline(query=fasta.name, subject=fasta.name, outfmt=6)()[0]
+        utils.save_text_file(out, "blast_file") # Save BLAST file
     out_array = [i.split('\t') for i in out.split('\n') if any(i)]
     pdb_alignments = [PDBAlignment(i[0],i[1],float(i[2]),int(i[6]),int(i[7]),int(i[8]),int(i[9])) for i in out_array]
-
+    
     del_chains = [] # Chains to be deleted
     for alignment in pdb_alignments:
-        short_seq = tuple(sorted([len(chains[alignment.qseqid]), len(chains[alignment.sseqid])]))[0]
+        chains_sorted = sorted([chains[alignment.qseqid], chains[alignment.sseqid]], key=lambda x: len(x))
+        short_seq = chains_sorted[0].seq_id
         tloops_1 = sorted([i.res_seq for i in chains[alignment.qseqid].tloops]) #// if i.res_nums[0] >= alignment.qstart-1 and i.res_nums[-1] <= alignment.qend-1])
         tloops_2 = sorted([i.res_seq for i in chains[alignment.sseqid].tloops]) #// if i.res_nums[0] >= alignment.sstart-1 and i.res_nums[-1] <= alignment.send-1])
         if (
