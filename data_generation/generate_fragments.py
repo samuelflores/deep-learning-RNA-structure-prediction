@@ -48,13 +48,14 @@ def main(args):
     print(f'Retrieving fragments of length {args.fragment_length}')
     fragments_raw = get_fragments(chains_annotated_filtered, args.fragment_length)
     utils.save(fragments_raw, f'fragments_{args.fragment_length}_raw', args.data_dir, 'pickle')
-    
+        
     print('Removing duplicate decoy fragments')
     tloop_fragments = [i for i in fragments_raw if i.clust_id != 0]
     decoy_fragments = [i for i in fragments_raw if i.clust_id == 0]
     decoy_fragments_filtered = utils.filter(decoy_fragments, ['res_names'])
     fragments_filtered = tloop_fragments + decoy_fragments_filtered
     utils.save(fragments_filtered, f'fragments_{args.fragment_length}_filtered', args.data_dir, 'pickle')
+    utils.save(fragments_filtered, f'fragments_{args.fragment_length}_filtered', args.data_dir, 'csv')
 
 
 if __name__ == '__main__':
