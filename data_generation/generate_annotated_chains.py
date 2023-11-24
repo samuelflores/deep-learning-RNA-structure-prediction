@@ -92,15 +92,16 @@ def annotate_chains_tloops(tloops:list[Type[Tetraloop]], chains:dict[str, Type[C
 # ! This step removes some of the unique tetraloops in the dataset, and I'm not entirely sure why. I've troubleshot it as far as I understand, but a couple tetraloops are just irrevocably lost. Keep this in mind when analyzing the filtered chains data.
 
 
-def remove_similar_chains(chains:dict[str, Type[Chain]], max_pident:float=95) -> dict[str, Type[Chain]]:
+def remove_similar_chains(chains:dict[str, Type[Chain]], data_dir:str, max_pident:float=95) -> dict[str, Type[Chain]]:
     
     # Make temporary FASTA file for BLAST alignment and store the resulting pairwise comparisons as a list of PDBAlignment objects
     with NamedTemporaryFile(mode='w') as fasta:
-        fasta.write('\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains.values()]))
-        utils.save_text_file('\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains.values()]), "fasta_file") # Save fasta file
+        fasta_str = '\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains.values()])
+        utils.save_text_file(fasta_str, f"{data_dir}/fasta") # Save fasta file
+        fasta.write(fasta_str)
         fasta.seek(0)
         out = NcbiblastnCommandline(query=fasta.name, subject=fasta.name, outfmt=6)()[0]
-        utils.save_text_file(out, "blast_file") # Save BLAST file
+        utils.save_text_file(out, f"{data_dir}/blast") # Save BLAST file
     out_array = [i.split('\t') for i in out.split('\n') if any(i)]
     pdb_alignments = [PDBAlignment(i[0],i[1],float(i[2]),int(i[6]),int(i[7]),int(i[8]),int(i[9])) for i in out_array]
     
@@ -156,15 +157,15 @@ def main(args):
     
     print('Removing duplicate and similar annotated chains')
     chains_annotated_filtered = {i.seq_id:i for i in utils.filter(list(chains_annotated_raw.values()), ['clust_ids','res_names'])} # Remove identical chains
-    chains_annotated_filtered = remove_similar_chains(chains_annotated_filtered) # Remove similar chains (alignment above a certain percent identity)
+    chains_annotated_filtered = remove_similar_chains(chains_annotated_filtered, args.data_dir) # Remove similar chains (alignment above a certain percent identity)
     utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'pickle')
     utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'csv')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--clusters_dir', type=str, default='../../../all_clusters')
-    parser.add_argument('-s', '--structures_dir', type=str, default='../../../all_structures')
+    parser.add_argument('-c', '--clusters_dir', type=str, default='../../all_clusters')
+    parser.add_argument('-s', '--structures_dir', type=str, default='../../all_structures')
     parser.add_argument('-d', '--data_dir', type=str, default='data')
     parser.add_argument('-p', '--download_pdbs', type=bool, default=False)
     args = parser.parse_args()
