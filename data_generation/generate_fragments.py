@@ -55,7 +55,7 @@ def main(args):
     decoy_fragments_filtered = utils.filter(decoy_fragments, ['res_names'])
     fragments_filtered = tloop_fragments + decoy_fragments_filtered
     utils.save(fragments_filtered, f'fragments_{args.fragment_length}_filtered', args.data_dir, 'pickle')
-    utils.save(fragments_filtered, f'fragments_{args.fragment_length}_filtered', args.data_dir, 'csv')
+    # utils.save(fragments_filtered, f'fragments_{args.fragment_length}_filtered', args.data_dir, 'csv')
 
 
 if __name__ == '__main__':
