@@ -8,7 +8,7 @@
 *.fa
 *.pickle
 *.pdf
-!data/RCSB_metadata.csv
+!RCSB_metadata.csv
 
 # Ignore directories with this name:
 TetraloopsDatasets/
