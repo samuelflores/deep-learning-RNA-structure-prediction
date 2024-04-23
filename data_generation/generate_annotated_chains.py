@@ -95,7 +95,7 @@ def annotate_chains_tloops(tloops:list[Type[Tetraloop]], chains:dict[str, Type[C
 def remove_similar_chains(chains:dict[str, Type[Chain]], data_dir:str, max_pident:float=95) -> dict[str, Type[Chain]]:
     
     # Make temporary FASTA file for BLAST alignment and store the resulting pairwise comparisons as a list of PDBAlignment objects
-    with NamedTemporaryFile(mode='w') as fasta:
+    with NamedTemporaryFile(mode='w', delete=False) as fasta:
         fasta_str = '\n'.join([f'>{i.seq_id}\n{i.res_seq}'for i in chains.values()])
         utils.save_text_file(fasta_str, f"{data_dir}/fasta") # Save fasta file
         fasta.write(fasta_str)
