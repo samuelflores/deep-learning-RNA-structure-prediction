@@ -11,6 +11,7 @@
 
 # Ignore directories with this name:
 data_generation/data/*
+__pycache__/
 
 # Exceptions
 !data_generation/training_data/*/*.csv
