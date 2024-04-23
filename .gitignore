@@ -8,6 +8,7 @@
 *.fa
 *.pickle
 *.pdf
+!data_generation/training_data/*/*.csv
 !RCSB_metadata.csv
 
 # Ignore directories with this name:
