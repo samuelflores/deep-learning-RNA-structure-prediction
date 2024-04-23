@@ -6,4 +6,3 @@ python generate_fragments.py
 python generate_fragments.py -f 10
 python generate_fragments.py -f 12
 python generate_fragments.py -f 14
-python generate_fragments.py -f 16
