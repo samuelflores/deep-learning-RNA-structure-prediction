@@ -2,7 +2,6 @@
 *.log
 *.tif
 *.tiff
-*.npz
 *.fasta
 *.fa
 *.pdf
