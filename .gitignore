@@ -10,6 +10,7 @@
 
 # Ignore directories with this name:
 data_generation/data/*
+results
 __pycache__/
 
 # Exceptions
