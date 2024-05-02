@@ -1,0 +1,8 @@
+runs to complete:
+
+GNRA vs. other tloops
+
+tloop vs. non-tloop
+
+classifier (all clusters)
+
