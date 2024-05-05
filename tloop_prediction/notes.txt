@@ -1,8 +1,7 @@
 runs to complete:
 
-GNRA vs. other tloops
+GNRA vs. other tloops: ANN
 
-tloop vs. non-tloop
+tloop vs. non-tloop: ANN & DNABERT2
 
-classifier (all clusters)
-
+clusters (all clusters individually): ANN & DNABERT2
