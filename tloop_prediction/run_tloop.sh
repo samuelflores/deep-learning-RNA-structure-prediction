@@ -9,15 +9,15 @@ export LR=3e-5
 # train:test ratio (80:10:10 original paper, try smth else)
 # change bases from RNA to DNA
 
-for seed in 4 5 6 7 8 9 10 #1 2 3 11 12 13 14 15 16 17 18 19 20
+for seed in 1 2 3 #1 2 3 4 5 6 7 8 9 10
 do
-    for task in gnra
+    for task in clusters #gnra clusters tloop gnravall # TODO run for all clusters
     do
-        for fragment_length in 10 12 14 #8
+        for fragment_length in 8 10 12 14 16 18 20 22 24 #8 10 12 14 16 18 20 22 24
         do
             for train_ratio in 80
             do
-                for nucleotides in T U
+                for nucleotides in T U # T U
                 do
                     # Training use DataParallel
                     python ${TRAIN_PATH}/train_dnabert2.py \
