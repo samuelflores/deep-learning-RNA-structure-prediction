@@ -1,0 +1,263 @@
+absl-py @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/abslpy/absl-py-1.4.0
+accelerate==0.29.3
+aiohttp==3.9.5
+aiosignal==1.3.1
+alabaster @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/alabaster/alabaster-0.7.12
+antlr4-python3-runtime==4.9.3
+anyio @ file:///dev/shm/jupyterserver/1.21.0/GCCcore-11.3.0/anyio/anyio-3.6.1
+appdirs @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/appdirs/appdirs-1.4.4
+argon2-cffi @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/argon2cffi/argon2-cffi-20.1.0
+asn1crypto @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/asn1crypto/asn1crypto-1.5.1
+astor @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/astor/astor-0.8.1
+asttokens @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/asttokens/asttokens-2.0.8
+astunparse @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/astunparse/astunparse-1.6.3
+async-generator @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/async_generator/async_generator-1.10
+async-timeout==4.0.3
+atomicwrites @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/atomicwrites/atomicwrites-1.4.0
+attrs @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/attrs/attrs-21.4.0
+Babel @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/Babel/Babel-2.10.1
+backcall @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/backcall/backcall-0.2.0
+backports.entry-points-selectable @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/backportsentry_points_selectable/backports.entry_points_selectable-1.1.1
+backports.functools-lru-cache @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/backportsfunctools_lru_cache/backports.functools_lru_cache-1.6.4
+bcrypt @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/bcrypt/bcrypt-3.2.2
+beautifulsoup4 @ file:///dev/shm/BeautifulSoup/4.10.0/GCCcore-11.3.0/BeautifulSoup/beautifulsoup4-4.10.0
+beniget @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/beniget/beniget-0.3.0
+bitstring @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/bitstring/bitstring-3.1.9
+bleach @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/bleach/bleach-5.0.1
+blist @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/blist/blist-1.3.6
+Bottleneck @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/Bottleneck/Bottleneck-1.3.4
+CacheControl @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/CacheControl/CacheControl-0.12.11
+cachetools @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/cachetools/cachetools-5.2.1
+cachy @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/cachy/cachy-0.3.0
+certifi @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/certifi/certifi-2021.10.8
+cffi @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/cffi/cffi-1.15.0
+chardet @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/chardet/chardet-4.0.0
+charset-normalizer @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/charsetnormalizer/charset-normalizer-2.0.12
+cleo @ file:///apps/sources/p/Python/extensions/cleo-0.8.1-py2.py3-none-any.whl
+click @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/click/click-8.1.3
+clikit @ file:///apps/sources/p/Python/extensions/clikit-0.6.2-py2.py3-none-any.whl
+colorama @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/colorama/colorama-0.4.4
+crashtest @ file:///apps/sources/p/Python/extensions/crashtest-0.3.1-py3-none-any.whl
+cryptography @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/cryptography/cryptography-37.0.1
+cycler @ file:///dev/shm/matplotlib/3.5.2/foss-2022a/Cycler/cycler-0.11.0
+Cython @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/Cython/Cython-0.29.28
+datasets==2.19.0
+deap @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/deap/deap-1.3.3
+debugpy @ file:///apps/sources/i/IPython/extensions/debugpy-1.4.1-py2.py3-none-any.whl
+decorator @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/decorator/decorator-5.1.1
+defusedxml @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/defusedxml/defusedxml-0.7.1
+deprecation @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/deprecation/deprecation-2.1.0
+dill @ file:///dev/shm/dill/0.3.6/GCCcore-11.3.0/dill-0.3.6
+distlib @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/distlib/distlib-0.3.4
+docopt @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/docopt/docopt-0.6.2
+docutils @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/docutils/docutils-0.17.1
+ecdsa @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/ecdsa/ecdsa-0.17.0
+editables @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/editables/editables-0.3
+einops==0.8.0
+entrypoints @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/entrypoints/entrypoints-0.4
+evaluate==0.4.1
+executing @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/executing/executing-1.0.0
+expecttest @ file:///dev/shm/expecttest/0.1.3/GCCcore-11.3.0/expecttest-0.1.3
+fastjsonschema @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/fastjsonschema/fastjsonschema-2.16.1
+filelock @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/filelock/filelock-3.6.0
+flatbuffers @ file:///dev/shm/flatbuffers/2.0.7/GCCcore-11.3.0/flatbuffers/flatbuffers-2.0.7
+flit @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/flit/flit-3.7.1
+flit_core @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/flitcore/flit_core-3.7.1
+fonttools @ file:///dev/shm/matplotlib/3.5.2/foss-2022a/fonttools/fonttools-4.34.0
+frozenlist==1.4.1
+fsspec==2024.3.1
+future @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/future/future-0.18.2
+gast @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/gast/gast-0.4.0
+glob2 @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/glob2/glob2-0.7
+google-auth @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/googleauth/google-auth-2.16.0
+google-auth-oauthlib @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/googleauthoauthlib/google-auth-oauthlib-0.4.6
+google-pasta @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/googlepasta/google-pasta-0.2.0
+grpcio @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/grpcio/grpcio-1.51.1
+gviz-api @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/gvizapi/gviz_api-1.10.0
+h5py @ file:///dev/shm/h5py/3.7.0/foss-2022a/h5py-3.7.0
+html5lib @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/html5lib/html5lib-1.1
+huggingface-hub==0.22.2
+idna @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/idna/idna-3.3
+imagesize @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/imagesize/imagesize-1.3.0
+importlib-metadata @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/importlib_metadata/importlib_metadata-4.11.3
+importlib-resources @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/importlib_resources/importlib_resources-5.7.1
+iniconfig @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/iniconfig/iniconfig-1.1.1
+intervaltree @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/intervaltree/intervaltree-3.1.0
+intreehooks @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/intreehooks/intreehooks-1.0
+ipaddress @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/ipaddress/ipaddress-1.0.23
+ipykernel @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/ipykernel/ipykernel-6.13.0
+ipython @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/ipython/ipython-8.5.0
+ipython-genutils @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/ipython_genutils/ipython_genutils-0.2.0
+ipywidgets @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/ipywidgets/ipywidgets-7.7.4
+jedi @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/jedi/jedi-0.18.1
+jeepney @ file:///apps/sources/p/Python/extensions/jeepney-0.8.0-py3-none-any.whl
+Jinja2 @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/Jinja2/Jinja2-3.1.2
+joblib @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/joblib/joblib-1.1.0
+json5 @ file:///dev/shm/JupyterLab/3.5.0/GCCcore-11.3.0/json5/json5-0.9.10
+jsonschema @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/jsonschema/jsonschema-4.4.0
+jupyter-client @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/jupyter_client/jupyter_client-7.3.1
+jupyter-core @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/jupyter_core/jupyter_core-4.10.0
+jupyter-packaging @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/jupyter_packaging/jupyter_packaging-0.12.0
+jupyter-server @ file:///dev/shm/jupyterserver/1.21.0/GCCcore-11.3.0/jupyter_server/jupyter_server-1.21.0
+jupyterlab @ file:///dev/shm/JupyterLab/3.5.0/GCCcore-11.3.0/jupyterlab/jupyterlab-3.5.0
+jupyterlab-pygments @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/jupyterlab_pygments/jupyterlab_pygments-0.1.2
+jupyterlab-server @ file:///dev/shm/JupyterLab/3.5.0/GCCcore-11.3.0/jupyterlab_server/jupyterlab_server-2.13.0
+jupyterlab-widgets @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/jupyterlab_widgets/jupyterlab_widgets-1.1.3
+keras @ file:///apps/sources/t/TensorFlow/extensions/keras-2.11.0-py2.py3-none-any.whl
+keyring @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/keyring/keyring-23.5.0
+keyrings.alt @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/keyringsalt/keyrings.alt-4.1.0
+kiwisolver @ file:///dev/shm/matplotlib/3.5.2/foss-2022a/kiwisolver/kiwisolver-1.4.3
+liac-arff @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/liacarff/liac-arff-2.5.0
+lockfile @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/lockfile/lockfile-0.12.2
+lxml @ file:///dev/shm/lxml/4.9.1/GCCcore-11.3.0/lxml-4.9.1
+Markdown @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/Markdown/Markdown-3.4.1
+MarkupSafe @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/MarkupSafe/MarkupSafe-2.1.1
+matplotlib @ file:///dev/shm/matplotlib/3.5.2/foss-2022a/matplotlib/matplotlib-3.5.2
+matplotlib-inline @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/matplotlibinline/matplotlib-inline-0.1.2
+mistune @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/mistune/mistune-0.8.1
+mock @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/mock/mock-4.0.3
+more-itertools @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/moreitertools/more-itertools-8.12.0
+mpi4py @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/mpi4py/mpi4py-3.1.3
+mpmath @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/mpmath/mpmath-1.2.1
+msgpack @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/msgpack/msgpack-1.0.3
+multidict==6.0.5
+multiprocess==0.70.16
+nbclassic @ file:///dev/shm/JupyterLab/3.5.0/GCCcore-11.3.0/nbclassic/nbclassic-0.4.8
+nbclient @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/nbclient/nbclient-0.6.3
+nbconvert @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/nbconvert/nbconvert-6.5.3
+nbformat @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/nbformat/nbformat-5.4.0
+nest-asyncio @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/nest_asyncio/nest_asyncio-1.5.5
+netaddr @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/netaddr/netaddr-0.8.0
+netifaces @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/netifaces/netifaces-0.11.0
+networkx @ file:///dev/shm/networkx/2.8.4/foss-2022a/networkx-2.8.4
+notebook @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/notebook/notebook-6.4.0
+notebook-shim @ file:///dev/shm/JupyterLab/3.5.0/GCCcore-11.3.0/notebook_shim/notebook_shim-0.1.0
+numexpr @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/numexpr/numexpr-2.8.1
+numpy @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/numpy/numpy-1.22.3
+oauthlib @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/oauthlib/oauthlib-3.2.2
+omegaconf==2.3.0
+opt-einsum @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/opteinsum/opt_einsum-3.3.0
+packaging @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/packaging/packaging-20.9
+pandas @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/pandas/pandas-1.4.2
+pandocfilters @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/pandocfilters/pandocfilters-1.5.0
+paramiko @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/paramiko/paramiko-2.10.4
+parso @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/parso/parso-0.8.3
+pastel @ file:///apps/sources/p/Python/extensions/pastel-0.2.1-py2.py3-none-any.whl
+pathlib2 @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pathlib2/pathlib2-2.3.7.post1
+pathspec @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pathspec/pathspec-0.9.0
+pbr @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pbr/pbr-5.8.1
+peft==0.10.0
+pexpect @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pexpect/pexpect-4.8.0
+pickleshare @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/pickleshare/pickleshare-0.7.5
+Pillow==9.1.1
+pkginfo @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pkginfo/pkginfo-1.8.2
+platformdirs @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/platformdirs/platformdirs-2.4.1
+pluggy @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pluggy/pluggy-1.0.0
+ply @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/ply/ply-3.11
+poetry @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/poetry/poetry-1.1.13
+poetry-core @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/poetrycore/poetry-core-1.0.8
+portpicker @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/portpicker/portpicker-1.5.2
+prometheus-client @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/prometheus_client/prometheus_client-0.11.0
+prompt-toolkit @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/prompt_toolkit/prompt_toolkit-3.0.31
+protobuf @ file:///dev/shm/protobufpython/3.19.4/GCCcore-11.3.0/protobuf-3.19.4
+psutil @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/psutil/psutil-5.9.0
+ptyprocess @ file:///apps/sources/p/Python/extensions/ptyprocess-0.7.0-py2.py3-none-any.whl
+pure-eval @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/pure_eval/pure_eval-0.2.2
+py @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/py/py-1.11.0
+py-expression-eval @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/py_expression_eval/py_expression_eval-0.3.14
+pyarrow==16.0.0
+pyarrow-hotfix==0.6
+pyasn1 @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pyasn1/pyasn1-0.4.8
+pyasn1-modules @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/pyasn1modules/pyasn1-modules-0.2.8
+pybind11 @ file:///dev/shm/pybind11/2.9.2/GCCcore-11.3.0/pybind11-2.9.2
+pycparser @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pycparser/pycparser-2.21
+pycryptodome @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pycryptodome/pycryptodome-3.17
+pydot==2.0.0
+Pygments @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/Pygments/Pygments-2.12.0
+pylev @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pylev/pylev-1.4.0
+PyNaCl @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/PyNaCl/PyNaCl-1.5.0
+pyparsing @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pyparsing/pyparsing-3.0.8
+PyPDF2==3.0.1
+pyrsistent @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pyrsistent/pyrsistent-0.18.1
+pytest @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pytest/pytest-7.1.2
+python-dateutil @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pythondateutil/python-dateutil-2.8.2
+pythran @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/pythran/pythran-0.9.11
+pytoml @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pytoml/pytoml-0.1.21
+pytz @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/pytz/pytz-2022.1
+PyYAML @ file:///dev/shm/PyYAML/6.0/GCCcore-11.3.0/PyYAML-6.0
+pyzmq @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/pyzmq/pyzmq-23.2.1
+regex @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/regex/regex-2022.4.24
+requests @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/requests/requests-2.27.1
+requests-oauthlib @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/requestsoauthlib/requests-oauthlib-1.3.1
+requests-toolbelt @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/requeststoolbelt/requests-toolbelt-0.9.1
+responses==0.18.0
+rsa @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/rsa/rsa-4.9
+safetensors==0.4.3
+scandir @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/scandir/scandir-1.10.0
+scikit-learn @ file:///dev/shm/scikitlearn/1.1.2/foss-2022a/scikitlearn/scikit-learn-1.1.2
+SciPy @ file:///dev/shm/SciPybundle/2022.05/foss-2022a/scipy/scipy-1.8.1
+seaborn @ file:///dev/shm/Seaborn/0.12.1/foss-2022a/seaborn-0.12.1
+SecretStorage @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/SecretStorage/SecretStorage-3.3.2
+semantic-version @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/semantic_version/semantic_version-2.9.0
+Send2Trash @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/Send2Trash/Send2Trash-1.8.0
+setuptools-rust @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/setuptoolsrust/setuptools-rust-1.3.0
+setuptools-scm @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/setuptools_scm/setuptools_scm-6.4.2
+shellingham @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/shellingham/shellingham-1.4.0
+simplegeneric @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/simplegeneric/simplegeneric-0.8.1
+simplejson @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/simplejson/simplejson-3.17.6
+six @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/six/six-1.16.0
+sklearn @ file:///dev/shm/scikitlearn/1.1.2/foss-2022a/sklearn/sklearn-0.0
+sniffio @ file:///dev/shm/jupyterserver/1.21.0/GCCcore-11.3.0/sniffio/sniffio-1.3.0
+snowballstemmer @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/snowballstemmer/snowballstemmer-2.2.0
+sortedcontainers @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sortedcontainers/sortedcontainers-2.4.0
+soupsieve @ file:///dev/shm/BeautifulSoup/4.10.0/GCCcore-11.3.0/soupsieve/soupsieve-2.3.1
+Sphinx @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/Sphinx/Sphinx-4.5.0
+sphinx-bootstrap-theme @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxbootstraptheme/sphinx-bootstrap-theme-0.8.1
+sphinxcontrib-applehelp @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxcontribapplehelp/sphinxcontrib-applehelp-1.0.2
+sphinxcontrib-devhelp @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxcontribdevhelp/sphinxcontrib-devhelp-1.0.2
+sphinxcontrib-htmlhelp @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxcontribhtmlhelp/sphinxcontrib-htmlhelp-2.0.0
+sphinxcontrib-jsmath @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxcontribjsmath/sphinxcontrib-jsmath-1.0.1
+sphinxcontrib-qthelp @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxcontribqthelp/sphinxcontrib-qthelp-1.0.3
+sphinxcontrib-serializinghtml @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxcontribserializinghtml/sphinxcontrib-serializinghtml-1.1.5
+sphinxcontrib-websupport @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/sphinxcontribwebsupport/sphinxcontrib-websupport-1.2.4
+stack-data @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/stack_data/stack_data-0.5.0
+tabulate @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/tabulate/tabulate-0.8.9
+tblib @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/tblib/tblib-1.7.0
+tensorboard @ file:///apps/sources/t/TensorFlow/extensions/tensorboard-2.11.1-py3-none-any.whl
+tensorboard-data-server @ file:///apps/sources/t/TensorFlow/extensions/tensorboard_data_server-0.6.1-py3-none-any.whl
+tensorboard-plugin-profile @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/tensorboardpluginprofile/tensorboard_plugin_profile-2.11.1
+tensorboard-plugin-wit @ file:///apps/sources/t/TensorFlow/extensions/tensorboard_plugin_wit-1.8.1-py3-none-any.whl
+tensorflow @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/tensorflow-2.11.0-cp310-cp310-linux_x86_64.whl
+tensorflow-addons==0.23.0
+tensorflow-estimator @ file:///apps/sources/t/TensorFlow/extensions/tensorflow_estimator-2.11.0-py2.py3-none-any.whl
+termcolor @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/termcolor/termcolor-1.1.0
+terminado @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/terminado/terminado-0.13.0
+testpath @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/testpath/testpath-0.6.0
+threadpoolctl @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/threadpoolctl/threadpoolctl-3.1.0
+tinycss2 @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/tinycss2/tinycss2-1.1.1
+tokenizers==0.13.3
+toml @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/toml/toml-0.10.2
+tomli @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/tomli/tomli-2.0.1
+tomli_w @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/tomli_w/tomli_w-1.0.0
+tomlkit @ file:///apps/sources/p/Python/extensions/tomlkit-0.10.2-py3-none-any.whl
+torch==1.13.1
+tornado @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/tornado/tornado-6.2
+tqdm==4.66.2
+traitlets @ file:///apps/sources/i/IPython/extensions/traitlets-5.2.1.post0-py3-none-any.whl
+transformers==4.29.2
+typeguard==2.13.3
+typing_extensions @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/typing_extensions/typing_extensions-4.2.0
+ujson @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/ujson/ujson-5.2.0
+urllib3 @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/urllib3/urllib3-1.26.9
+virtualenv @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/virtualenv/virtualenv-20.14.1
+wcwidth @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/wcwidth/wcwidth-0.2.5
+webencodings @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/webencodings/webencodings-0.5.1
+websocket-client @ file:///dev/shm/jupyterserver/1.21.0/GCCcore-11.3.0/websocketclient/websocket-client-1.4.2
+Werkzeug @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/Werkzeug/Werkzeug-2.2.2
+widgetsnbextension @ file:///dev/shm/IPython/8.5.0/GCCcore-11.3.0/widgetsnbextension/widgetsnbextension-3.6.3
+wrapt @ file:///dev/shm/TensorFlow/2.11.0/foss-2022a-CUDA-11.7.0/wrapt/wrapt-1.14.1
+xlrd @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/xlrd/xlrd-2.0.1
+xxhash==3.4.1
+yarl==1.9.4
+zipfile36 @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/zipfile36/zipfile36-0.1.3
+zipp @ file:///dev/shm/Python/3.10.4/GCCcore-11.3.0/zipp/zipp-3.8.0

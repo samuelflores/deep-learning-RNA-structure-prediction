@@ -1,0 +1,7 @@
+runs to complete:
+
+GNRA vs. other tloops: ANN
+
+tloop vs. non-tloop: ANN & DNABERT2
+
+clusters (all clusters individually): ANN & DNABERT2
