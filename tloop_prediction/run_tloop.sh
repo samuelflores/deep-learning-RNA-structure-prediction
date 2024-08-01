@@ -1,4 +1,4 @@
-export DATA_PATH=../data_generation/training_data
+export DATA_PATH=../data_generation/training_data/non_homology_reduced
 export OUTPUT_PATH=./results/DNABERT2/alvis/tetraloop
 export TRAIN_PATH=.
 export LR=3e-5
