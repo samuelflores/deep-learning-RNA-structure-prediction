@@ -10,9 +10,11 @@
 
 # Ignore directories with this name:
 data_generation/data/*
+data_generation/training_data/*
 results
 __pycache__/
 
 # Exceptions
 !data_generation/training_data/*/*.csv
 !data_generation/data/RCSB_metadata.csv
+!data_generation/training_data/training_data_generation.ipynb
