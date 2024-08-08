@@ -35,6 +35,7 @@ def get_fragments(chains:list[Type[Chain]], fragment_length:int=8, multi:bool=Tr
             if multi:  
                 clust_id = chain.clust_ids[i:i+fragment_length]
                 clust_id[-7:] = [0]*7 # Remove cluster IDs for cut-off tetraloops at the end of the sequence
+                clust_id = tuple(clust_id) # Turn clust_if list into tuple
             else:
                 clust_id = chain.clust_ids[i + fragment_extension]
             seq_nums, res_names, res_nums, ins_codes = tuple([j[i:i+fragment_length] for j in [chain.seq_nums, chain.res_names, chain.res_nums, chain.ins_codes]])
