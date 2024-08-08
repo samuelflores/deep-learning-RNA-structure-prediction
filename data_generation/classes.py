@@ -59,7 +59,7 @@ class Chain(Sequence):
 
 
 class Fragment(Sequence):
-    def __init__(self, pdb_id: str, clust_id: int, chain_id: str, seq_nums: list[int], res_names: list[str], res_nums: list[int], ins_codes: list[str]) -> None:
+    def __init__(self, pdb_id: str, clust_id, chain_id: str, seq_nums: list[int], res_names: list[str], res_nums: list[int], ins_codes: list[str]) -> None:
         super().__init__(pdb_id, seq_nums, res_names, res_nums)
         self.clust_id = clust_id
         self.chain_id = chain_id
