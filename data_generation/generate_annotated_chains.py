@@ -130,12 +130,12 @@ def main(args):
     if not os.path.exists(args.structures_dir):
         os.makedirs(args.structures_dir)
     
-    print('Retrieving raw tetraloops')
-    tloops_raw = get_tloops(args.clusters_dir)
-    utils.save(tloops_raw, 'tloops_raw', args.data_dir, 'pickle')
-    utils.save(tloops_raw, 'tloops_raw', args.data_dir, 'csv')
+    print('Retrieving tetraloops')
+    tloops = get_tloops(args.clusters_dir)
+    utils.save(tloops, 'tloops', args.data_dir, 'pickle')
+    utils.save(tloops, 'tloops', args.data_dir, 'csv')
     
-    pdb_ids = list(set([i.pdb_id for i in tloops_raw]))
+    pdb_ids = list(set([i.pdb_id for i in tloops]))
 
     # Download all required mmCIF files
     # NOTE: This step takes a long time, so if the structures folder already exists then don't create a new one or re-download.
@@ -143,23 +143,24 @@ def main(args):
         PDBList().download_pdb_files(pdb_ids, obsolete=True, pdir=args.structures_dir, overwrite=True)
     
     print('Removing duplicate tetraloops')
-    tloops_filtered = utils.filter(tloops_raw, ['pdb_id','res_names','res_nums'])
-    utils.save(tloops_filtered, 'tloops_filtered', args.data_dir, 'pickle')
-    utils.save(tloops_filtered, 'tloops_filtered', args.data_dir, 'csv')
+    tloops = utils.filter(tloops, ['pdb_id','res_names','res_nums'])
+    # utils.save(tloops_filtered, 'tloops_filtered', args.data_dir, 'pickle')
+    # utils.save(tloops_filtered, 'tloops_filtered', args.data_dir, 'csv')
 
-    print('Retrieving raw chains')
-    chains_raw = get_chains(pdb_ids, args.structures_dir)
+    print('Retrieving chains')
+    chains = get_chains(pdb_ids, args.structures_dir)
 
-    print('Annotating raw chains with tetraloop positions')
-    chains_annotated_raw = annotate_chains_tloops(tloops_filtered, chains_raw)
-    utils.save(list(chains_annotated_raw.values()), 'chains_annotated_raw', args.data_dir, 'pickle')
-    utils.save(list(chains_annotated_raw.values()), 'chains_annotated_raw', args.data_dir, 'csv')
+    print('Annotating chains with tetraloop positions')
+    chains_annotated = annotate_chains_tloops(tloops, chains)
+    utils.save(list(chains_annotated.values()), 'chains_annotated', args.data_dir, 'pickle')
+    utils.save(list(chains_annotated.values()), 'chains_annotated', args.data_dir, 'csv')
     
-    print('Removing duplicate and similar annotated chains')
-    chains_annotated_filtered = {i.seq_id:i for i in utils.filter(list(chains_annotated_raw.values()), ['clust_ids','res_names'])} # Remove identical chains
-    chains_annotated_filtered = remove_similar_chains(chains_annotated_filtered, args.data_dir) # Remove similar chains (alignment above a certain percent identity)
-    utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'pickle')
-    utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'csv')
+    # NOTE: This step has been commented out due to downstream homology reduction step
+    # print('Removing duplicate and similar annotated chains')
+    # chains_annotated_filtered = {i.seq_id:i for i in utils.filter(list(chains_annotated.values()), ['clust_ids','res_names'])} # Remove identical chains
+    # chains_annotated_filtered = remove_similar_chains(chains_annotated_filtered, args.data_dir) # Remove similar chains (alignment above a certain percent identity)
+    # utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'pickle')
+    # utils.save(list(chains_annotated_filtered.values()), 'chains_annotated_filtered', args.data_dir, 'csv')
 
 
 if __name__ == '__main__':

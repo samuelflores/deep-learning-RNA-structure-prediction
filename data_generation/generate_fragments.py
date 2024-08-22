@@ -8,8 +8,7 @@ from typing import Type
 
 
 # * This script will generate the following files (in .pickle format):
-#     fragments_x_raw: All fragments of length x that can be generates from the input chains_annotated_filtered.pickle file
-#     fragments_x_filtered: fragments_x_raw with duplicate decoy fragments removed
+#     fragments_x: All fragments of length x that can be generated from the input chains_annotated.pickle file
 
 
 # * Arguments
@@ -50,24 +49,25 @@ def main(args):
         os.makedirs(args.data_dir)
     
     # Load in Chains file
-    chains_annotated_filtered = utils.load(args.chains_data)
+    chains = utils.load(args.chains_data)
     
     print(f'Retrieving fragments of length {args.fragment_length}')
-    fragments_raw = get_fragments(chains_annotated_filtered, args.fragment_length, args.multi_clust_id)
-    utils.save(fragments_raw, f'{args.prefix}_{args.fragment_length}_raw', args.data_dir, 'pickle')
+    fragments = get_fragments(chains, args.fragment_length, args.multi_clust_id)
+    utils.save(fragments, f'{args.prefix}_{args.fragment_length}', args.data_dir, 'pickle')
     
-    print('Removing duplicate decoy fragments')
-    tloop_fragments = [i for i in fragments_raw if i.clust_id != 0]
-    decoy_fragments = [i for i in fragments_raw if i.clust_id == 0]
-    decoy_fragments_filtered = utils.filter(decoy_fragments, ['res_names'])
-    fragments_filtered = tloop_fragments + decoy_fragments_filtered
-    utils.save(fragments_filtered, f'{args.prefix}_{args.fragment_length}_filtered', args.data_dir, 'pickle')
-    # utils.save(fragments_filtered, f'fragments_{args.fragment_length}_filtered', args.data_dir, 'csv')
+    # NOTE: This step has been commented out due to downstream homology reduction step
+    # print('Removing duplicate decoy fragments')
+    # tloop_fragments = [i for i in fragments if i.clust_id != 0]
+    # decoy_fragments = [i for i in fragments if i.clust_id == 0]
+    # decoy_fragments_filtered = utils.filter(decoy_fragments, ['res_names'])
+    # fragments_filtered = tloop_fragments + decoy_fragments_filtered
+    # utils.save(fragments_filtered, f'{args.prefix}_{args.fragment_length}_filtered', args.data_dir, 'pickle')
+    # # utils.save(fragments_filtered, f'fragments_{args.fragment_length}_filtered', args.data_dir, 'csv')
 
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('-c', '--chains_data', type=str, default='data/chains_annotated_filtered.pickle')
+    parser.add_argument('-c', '--chains_data', type=str, default='data/chains_annotated.pickle')
     parser.add_argument('-d', '--data_dir', type=str, default='data/fragments')
     parser.add_argument('-p', '--prefix', type=str, default='fragments')
     parser.add_argument('-f', '--fragment_length', type=int, default=8)
