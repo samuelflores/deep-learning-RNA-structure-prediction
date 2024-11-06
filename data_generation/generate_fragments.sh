@@ -13,6 +13,10 @@ python generate_fragments.py -f 18
 python generate_fragments.py -f 20
 python generate_fragments.py -f 22
 python generate_fragments.py -f 24
+python generate_fragments.py -f 44
+python generate_fragments.py -f 64
+python generate_fragments.py -f 84
+python generate_fragments.py -f 104
 
 # # Generate fragments with complex cluster IDs
 # python generate_fragments.py -p 'fragments_multi' -m
